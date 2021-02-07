@@ -1,0 +1,34 @@
+@import "./reset";
+@import "./pages/login.scss";
+
+body{
+    background-color: #efefef;
+}
+
+/* router view transition */
+.zoom-fade-enter-active,
+.zoom-fade-leave-active {
+  transition: transform 0.35s, opacity 0.28s ease-in-out;
+}
+
+.zoom-fade-enter-from {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.zoom-fade-leave-to {
+  opacity: 0;
+  transform: scale(1.1);
+}
+
+// 权限菜单
+*[disabled=true]{
+    color:#999;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.el-menu-item[disabled=true]{
+    display: none;
+}
+
