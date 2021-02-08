@@ -11,17 +11,15 @@ const router:Router = createRouter({
         {
             path:'/',
             component:Home,
-            children:[
-                {
-                    path:'/login',
-                    component:Login,
-                    meta:{
-                        title:'登录'
-                    }
-                }
-            ],
             meta:{
                 title:'主页'
+            }
+        },
+        {
+            path:'/login',
+            component:Login,
+            meta:{
+                title:'登录'
             }
         }
     ]

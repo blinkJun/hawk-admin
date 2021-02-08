@@ -14,10 +14,16 @@ import router from './routes/index'
 // store
 import store,{key} from './store/index'
 
+// 配置
+import config from './config'
+
 
 const app = createApp(App)
 
 app.use(router)
 app.use(store,key)
 app.use(ElementPlus,{ size: 'small', zIndex: 1000 })
+
+app.config.globalProperties.$config = config
+
 app.mount('#app')

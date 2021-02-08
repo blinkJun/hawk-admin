@@ -9,6 +9,8 @@
 [typescript](https://www.tslang.cn/docs/handbook/basic-types.html)
  
 [element-plus](https://element-plus.gitee.io/#/zh-CN/component/installation)
+ 
+[vite](https://vitejs.dev/config/#config-file)
 
 ### 借鉴以下后台管理系统
 

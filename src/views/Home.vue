@@ -2,7 +2,7 @@
     <el-container class="home container" :class="{collapse:collapse}" >
         <menu-left />
         <menu-top />
-        <el-container class="home page"  >
+        <el-container class="page"  >
             <router-view v-slot="{ Component }">
                 <transition name="zoom-fade">
                     <component :is="Component" />
@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" >
-import { defineComponent,ref,computed  } from "vue";
+import { defineComponent,computed} from "vue";
 import MenuLeft from "../components/MenuLeft.vue";
 import MenuTop from "../components/MenuTop.vue";
 import {useStore} from '../store/index'
@@ -38,8 +38,9 @@ export default defineComponent({
     &.collapse{
         padding-left:$menu-left-shrink-width;
     }
+    >.page {
+        padding:0 10px;
+    }
 }
-.home.page {
-    padding:0 10px;
-}
+
 </style>

@@ -14,7 +14,7 @@
                     key="fold"
                     @click="handleCollapse(true)"
                 ></i>
-                <i class="el-icon-refresh"></i>
+                <i class="el-icon-refresh" @click="reloadPage" ></i>
                 <breadcrumb class="breadcrumb" />
             </div>
             <div class="options">
@@ -82,6 +82,9 @@ export default defineComponent({
                 document.exitFullscreen();
             },
             goPage: () => {},
+            reloadPage:()=>{
+                location.reload()
+            }
         };
     },
 });

@@ -49,7 +49,7 @@ import { defineComponent } from "vue";
 export default defineComponent({
     setup() {
         return {
-            activeTab:0,
+            activeTab:'/',
             worktabs: [
                 {
                     path:'/',
