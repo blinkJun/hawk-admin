@@ -39,7 +39,7 @@
                             <span class="name">admin</span>
                         </div>
                         <template #dropdown>
-                            <el-dropdown-menu>
+                            <el-dropdown-menu class="user-setting-list" >
                                 <el-dropdown-item command="/user/user">
                                     <i class="el-icon-user"></i>
                                     <span class="menu-txt">个人中心</span>
@@ -166,5 +166,8 @@ export default defineComponent({
             }
         }
     }
+}
+.user-setting-list .el-dropdown-menu__item{
+    padding: 5px 15px;
 }
 </style>

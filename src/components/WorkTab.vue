@@ -21,7 +21,7 @@
             <el-dropdown @command="closeWorktab" >
                 <div class="btn el-icon-arrow-down" />
                 <template #dropdown>
-                    <el-dropdown-menu>
+                    <el-dropdown-menu class="work-tab-setting" >
                         <el-dropdown-item icon="el-icon-arrow-left" command="left">
                             <span style="menu-txt">关闭左侧</span>
                         </el-dropdown-item>
@@ -140,5 +140,8 @@ export default defineComponent({
             }
         }
     }
+}
+.work-tab-setting .el-dropdown-menu__item{
+    padding: 3px 15px;
 }
 </style>
