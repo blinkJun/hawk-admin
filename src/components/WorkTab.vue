@@ -54,58 +54,6 @@ export default defineComponent({
                 {
                     path:'/',
                     title:'主页'
-                },
-                {
-                    path:'/login',
-                    title:'登录'
-                },
-                {
-                    path:'/login',
-                    title:'登录'
-                },
-                {
-                    path:'/login',
-                    title:'登录'
-                },
-                {
-                    path:'/login',
-                    title:'登录'
-                },
-                {
-                    path:'/login',
-                    title:'登录'
-                },
-                {
-                    path:'/login',
-                    title:'登录'
-                },
-                {
-                    path:'/login',
-                    title:'登录'
-                },
-                {
-                    path:'/login',
-                    title:'登录'
-                },
-                {
-                    path:'/login',
-                    title:'登录'
-                },
-                {
-                    path:'/login',
-                    title:'登录'
-                },
-                {
-                    path:'/login',
-                    title:'登录'
-                },
-                {
-                    path:'/login',
-                    title:'登录'
-                },
-                {
-                    path:'/login',
-                    title:'登录'
                 }
             ],
             closeWorktab: () => {},

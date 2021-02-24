@@ -2,7 +2,7 @@ import { createStore,Store,useStore as baseUseStore } from 'vuex'
 import {InjectionKey} from 'vue'
 
 // modules
-import {system,SystemState} from './menu';
+import {system,SystemState} from './modules/menu';
 
 export interface State{
     collapse:boolean

@@ -1,7 +1,6 @@
 const envApiHost = import.meta.env.VITE_HOST
 const publicPath = import.meta.env.VITE_PUBLIC_PATH
 
-console.log(envApiHost)
 export default {
     // 对应环境的apiHost
     apiHost: envApiHost,

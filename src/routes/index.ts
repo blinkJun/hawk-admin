@@ -1,4 +1,5 @@
 import {Router,createRouter,createWebHistory} from 'vue-router'
+import {useStore} from '../store/index'
 
 // pages
 import Home from '../views/Home.vue'
@@ -28,6 +29,13 @@ const router:Router = createRouter({
             }
         }
     ]
+})
+
+const store  = useStore()
+
+router.beforeEach(async (route,from,next)=>{
+    const isLogin = route.path === '/login'
+    next()
 })
 
 export default router
