@@ -28,7 +28,7 @@
                             <i class="el-icon-lock" slot="prepend" ></i>
                         </el-input>
                     </el-form-item>
-                    <el-button type="primary" class="login-btn" long size="large" @click="submit">登录</el-button>
+                    <el-button type="primary" class="login-btn" long size="large" @click="submit" :loading="onLogin" >{{onLogin?'登录中...':'登录'}}</el-button>
                 </el-form>
             </el-card>
         </div>
@@ -38,15 +38,14 @@
 
 <script lang="ts" >
 import { ElFormContext } from 'element-plus/lib/el-form'
-import {defineComponent,getCurrentInstance} from 'vue'
+import {defineComponent,getCurrentInstance,ref} from 'vue'
 import {useStore} from '../store/index'
-import router from '../routes/index'
+import { ElMessage } from 'element-plus';
 export default defineComponent ({
     data: () => ({
         form: {
             username: '',
-            password: '',
-            remember: true
+            password: ''
         },
         ruleValidate: {
             username: [
@@ -69,7 +68,10 @@ export default defineComponent ({
         const {appContext} = getCurrentInstance()!
         const store = useStore()
         const config = appContext.config.globalProperties.$config
+        const onLogin = ref(false)
         return {
+            store,
+            onLogin,
             publicPath:config.publicPath
         }
     },
@@ -80,18 +82,27 @@ export default defineComponent ({
             }
             const valid = await (this.$refs.form as ElFormCTX).validate()
             if (valid) {
-                router.push('/')
-                // await this.login({
-                //     username: this.form.username,
-                //     password: this.form.password,
-                //     remember: this.form.remember
-                // })
-                // await this.$store.dispatch('getNav')
-                // if (this.$route.query.redirect_url) {
-                //     this.$router.replace(this.$route.query.redirect_url)
-                // } else {
-                //     this.$router.replace('/')
-                // }
+                this.onLogin = true
+                try{
+                    await this.store.dispatch('login',{
+                        account:this.form.username,
+                        password:this.form.password
+                    })
+                    this.store.commit('setLoginState',true);
+                    ElMessage.success('登录成功！');
+                }catch(err){
+                    console.log(err);
+                    ElMessage.error(err.message)
+                    this.onLogin = false
+                    return false
+                }
+                this.onLogin = false
+                const redirectUrl = this.$route.query.redirect_url
+                if (redirectUrl) {
+                    this.$router.replace(redirectUrl as string)
+                } else {
+                    this.$router.replace('/')
+                }
             }
         }
     }
