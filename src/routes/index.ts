@@ -4,6 +4,8 @@ import {Router,createRouter,createWebHistory} from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 
+// menus
+import {systemRoutes} from './childrens/system'
 
 const router:Router = createRouter({
     history:createWebHistory(),
@@ -11,6 +13,9 @@ const router:Router = createRouter({
         {
             path:'/',
             component:Home,
+            children:[
+                ...systemRoutes
+            ],
             meta:{
                 title:'主页'
             }

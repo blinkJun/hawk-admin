@@ -1,18 +1,28 @@
 import { createStore,Store,useStore as baseUseStore } from 'vuex'
 import {InjectionKey} from 'vue'
 
-export interface State {
+// modules
+import {system,SystemState} from './menu';
+
+export interface State{
     collapse:boolean
 }
 
+export interface AllState extends State {
+    system:SystemState
+}
+
 // define injection key
-export const key: InjectionKey<Store<State>> = Symbol()
+export const key: InjectionKey<Store<AllState>> = Symbol()
 
 const store = createStore<State>({
     state(){
         return {
             collapse:false
         }
+    },
+    modules:{
+        system
     },
     mutations:{
         setCollapseState(state:State,collapse:boolean){
@@ -22,7 +32,7 @@ const store = createStore<State>({
 })
 
 export const useStore = ()=>{
-    return baseUseStore(key)
+    return baseUseStore<AllState>(key)
 }
 
 export default store

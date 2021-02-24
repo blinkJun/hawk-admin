@@ -13,35 +13,21 @@
             :default-active="focusSideMenuPath"
             :default-openeds="focusSideOpenMenuList"
         >
-            <el-submenu index="1">
+            <el-submenu
+                v-for="menu in menus"
+                :index="menu.path"
+            >
                 <template #title>
-                    <i class="el-icon-location"></i>
-                    <span>导航一</span>
+                    <i :class="[menu.icon]"></i>
+                    <span>{{menu.name}}</span>
                 </template>
-                <!-- <el-menu-item-group>
-                    <template #title>分组一</template>
-                    <el-menu-item index="1-1">选项1</el-menu-item>
-                    <el-menu-item index="1-2">选项2</el-menu-item>
-                </el-menu-item-group>
-                <el-menu-item-group title="分组2">
-                    <el-menu-item index="1-3">选项3</el-menu-item>
-                </el-menu-item-group> -->
-                <el-menu-item index="1-4-1"><span>导航一</span></el-menu-item>
-                <el-menu-item index="1-4-2"><span>导航一</span></el-menu-item>
-                <el-menu-item index="1-4-3"><span>导航一</span></el-menu-item>
+                <el-menu-item 
+                    v-for="subMenu in menu.routes"
+                    :index="subMenu.path"
+                >
+                    <span>{{subMenu.meta.title}}</span>
+                </el-menu-item>
             </el-submenu>
-            <el-menu-item index="/login"  >
-                <i class="el-icon-menu"></i>
-                <template #title>登录</template>
-            </el-menu-item>
-            <el-menu-item index="3" disabled>
-                <i class="el-icon-document"></i>
-                <template #title>导航三</template>
-            </el-menu-item>
-            <el-menu-item index="/">
-                <i class="el-icon-setting"></i>
-                <template #title>主页</template>
-            </el-menu-item>
         </el-menu>
     </div>
 </template>
@@ -61,6 +47,7 @@ export default defineComponent({
             focusSideMenuPath:'',
             focusSideOpenMenuList:[],
             collapse: computed(() => store.state.collapse),
+            menus:computed(()=>store.state.system.leftMenu)
         };
     },
 });

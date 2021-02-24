@@ -103,7 +103,7 @@ export default defineComponent ({
     height: 100vh;
 }
 .blur-box{
-    width:67%;
+    width:50%;
     min-width:360px;
     height:100%;
     overflow: hidden;
