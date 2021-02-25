@@ -29,7 +29,7 @@
                     @click="exitFullScreen"
                 ></i>
                 <div class="user">
-                    <el-dropdown @command="goPage">
+                    <el-dropdown @command="handleUserSettingCommand">
                         <div class="user-preview">
                             <img
                                 class="cover"
@@ -69,6 +69,7 @@ export default defineComponent({
         let onFullScreen = ref(false);
         const store = useStore();
         return {
+            store,
             onFullScreen,
             collapse: computed(() => store.state.collapse),
             handleCollapse: (collapse: boolean) =>
@@ -81,12 +82,19 @@ export default defineComponent({
                 onFullScreen.value = false;
                 document.exitFullscreen();
             },
-            goPage: () => {},
             reloadPage:()=>{
                 location.reload()
             }
         };
     },
+    methods:{
+        handleUserSettingCommand(command:string){
+            if(command==='loginOut'){
+                this.store.commit('setLoginState',false)
+                this.$router.push('/login')
+            }
+        }
+    }
 });
 </script>
 
