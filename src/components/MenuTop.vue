@@ -81,13 +81,14 @@ export default defineComponent({
             exitFullScreen: () => {
                 onFullScreen.value = false;
                 document.exitFullscreen();
-            },
-            reloadPage:()=>{
-                location.reload()
             }
+            
         };
     },
     methods:{
+        reloadPage:()=>{
+            location.reload()
+        },
         handleUserSettingCommand(command:string){
             if(command==='loginOut'){
                 this.store.commit('setLoginState',false)

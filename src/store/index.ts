@@ -2,7 +2,7 @@ import { createStore,Store,useStore as baseUseStore } from 'vuex'
 import {InjectionKey} from 'vue'
 
 // modules
-import {system,SystemState} from './modules/menu';
+import {menu,MenuState} from './modules/menu';
 import {account,AccountState} from './modules/account';
 
 export interface State{
@@ -10,7 +10,7 @@ export interface State{
 }
 
 export interface AllState extends State {
-    system:SystemState,
+    menu:MenuState,
     account:AccountState
 }
 
@@ -24,7 +24,7 @@ const store = createStore<State>({
         }
     },
     modules:{
-        system,
+        menu,
         account
     },
     mutations:{

@@ -44,10 +44,10 @@ export default defineComponent({
     setup() {
         const store = useStore();
         return {
-            focusSideMenuPath:'',
+            focusSideMenuPath:computed(() => store.state.menu.focusSideMenuPath),
             focusSideOpenMenuList:[],
             collapse: computed(() => store.state.collapse),
-            menus:computed(()=>store.state.system.leftMenu)
+            menus:computed(()=>store.state.menu.leftMenu)
         };
     },
 });
