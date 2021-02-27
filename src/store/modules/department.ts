@@ -1,15 +1,15 @@
-import {Module} from 'vuex'
-import {State} from '../index'
+import { Module } from 'vuex'
+import { State } from '../index'
 
 export interface DepartmentState {
 
 }
 
-export const system:Module<DepartmentState,State> = {
-    state:()=>({
+export const system: Module<DepartmentState, State> = {
+    state: () => ({
 
     }),
-    mutations:{
-        
+    mutations: {
+
     }
 }

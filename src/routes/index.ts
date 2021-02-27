@@ -1,44 +1,44 @@
-import {Router,createRouter,createWebHistory} from 'vue-router'
-import store,{AllState} from '../store/index'
+import { Router, createRouter, createWebHistory } from 'vue-router'
+import store, { AllState } from '../store/index'
 
 // pages
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 
 // menus
-import {systemRoutes} from './childrens/system'
+import { systemRoutes } from './childrens/system'
 
-const router:Router = createRouter({
-    history:createWebHistory(),
-    routes:[
+const router: Router = createRouter({
+    history: createWebHistory(),
+    routes: [
         {
-            path:'/',
-            component:Home,
-            children:[
+            path: '/',
+            component: Home,
+            children: [
                 ...systemRoutes
             ],
-            meta:{
-                title:'主页'
+            meta: {
+                title: '主页'
             }
         },
         {
-            path:'/login',
-            component:Login,
-            meta:{
-                title:'登录'
+            path: '/login',
+            component: Login,
+            meta: {
+                title: '登录'
             }
         }
     ]
 })
 
 
-router.beforeEach(async (route,from,next)=>{
+router.beforeEach(async (route, from, next) => {
     const state = store.state as AllState
     const isLoginPage = route.path === '/login'
     const isLogin = state.account.isLogin
 
     // 无登录信息时跳转到登录页
-    if (!isLoginPage&&!isLogin ) {
+    if (!isLoginPage && !isLogin) {
         next({
             path: '/login',
             query: {

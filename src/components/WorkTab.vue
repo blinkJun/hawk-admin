@@ -52,7 +52,7 @@
 
 <script lang="ts" >
 import { computed, defineComponent } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, RouteRecordNormalized } from "vue-router";
 import { useStore } from "../store";
 export default defineComponent({
     setup() {
@@ -79,7 +79,7 @@ export default defineComponent({
                 route:this.worktabs.find(route=>route.path===this.activeTab)
             })
         },
-        closeWorktabCurrent(route:any){
+        closeWorktabCurrent(route:RouteRecordNormalized){
             this.store.commit('removeRouteHistory',{
                 type:'current',
                 route:route

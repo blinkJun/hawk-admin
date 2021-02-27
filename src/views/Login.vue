@@ -127,8 +127,6 @@ export default defineComponent ({
     display: flex;
     align-items: center;
     justify-content: center;
-    background: url('https://source.unsplash.com/user/erondu') center top no-repeat;
-    background-size: cover;
     .blur-bg{
         display: block;
         width:100%;

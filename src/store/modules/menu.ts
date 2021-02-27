@@ -1,39 +1,40 @@
-import {Module} from 'vuex'
-import {State} from '../index'
-import {systemRouteConfig,systemRoutes} from '../../routes/childrens/system'
+import { Module } from 'vuex'
+import { State } from '../index'
+import { systemRouteConfig, systemRoutes } from '../../routes/childrens/system'
 import config from '../../config'
+import { RouteRecordNormalized } from 'vue-router'
 
 export interface MenuState {
-    leftMenu:any[],
-    focusSideMenuPath:string,
-    routerHistory:any[]
+    leftMenu: any[],
+    focusSideMenuPath: string,
+    routerHistory: any[]
 }
-interface RemoveRoute{
-    type:string,
-    route:any
+interface RemoveRoute {
+    type: string,
+    route: RouteRecordNormalized
 }
 
-export const menu:Module<MenuState,State> = {
-    state:()=>({
-        leftMenu:[
+export const menu: Module<MenuState, State> = {
+    state: () => ({
+        leftMenu: [
             {
                 ...systemRouteConfig,
-                routes:systemRoutes
+                routes: systemRoutes
             }
         ],
-        focusSideMenuPath:'',
-        routerHistory:[]
+        focusSideMenuPath: '',
+        routerHistory: []
     }),
-    mutations:{
+    mutations: {
         // 定位当前所在菜单
-        changeFocusMenu (state:MenuState, route) {
+        changeFocusMenu(state: MenuState, route: RouteRecordNormalized) {
             const path = route.path
 
             // 设置侧边栏选中
             state.focusSideMenuPath = path
         },
         // 保存当前跳转记录
-        saveRouteHistory (state:MenuState, route) {
+        saveRouteHistory(state: MenuState, route:RouteRecordNormalized) {
 
             // 不保存需要忽略的菜单
             if (config.menus.ignore.includes(route.path)) {
@@ -50,9 +51,9 @@ export const menu:Module<MenuState,State> = {
             }
         },
         // 删除跳转记录
-        removeRouteHistory (state:MenuState, toRemoveConfig:RemoveRoute) {
-            const {type,route} = toRemoveConfig
-            if(type==='current'){
+        removeRouteHistory(state: MenuState, toRemoveConfig: RemoveRoute) {
+            const { type, route } = toRemoveConfig
+            if (type === 'current') {
                 for (let i = 0; i < state.routerHistory.length; i++) {
                     const routeItem = state.routerHistory[i]
                     if (routeItem.path === route.path) {
@@ -60,27 +61,27 @@ export const menu:Module<MenuState,State> = {
                     }
                 }
             }
-            
-            
-            if(type==='left'){
+
+
+            if (type === 'left') {
                 const currentRoutePath = route.path
-                while(state.routerHistory[0].path!==currentRoutePath){
+                while (state.routerHistory[0].path !== currentRoutePath) {
                     state.routerHistory.shift()
                 }
             }
 
-            if(type==='right'){
+            if (type === 'right') {
                 const currentRoutePath = route.path
-                while(state.routerHistory[state.routerHistory.length-1].path!==currentRoutePath){
+                while (state.routerHistory[state.routerHistory.length - 1].path !== currentRoutePath) {
                     state.routerHistory.pop()
                 }
             }
 
-            if(type==='other'){
+            if (type === 'other') {
                 state.routerHistory = [route]
             }
 
-            if(type==='all'){
+            if (type === 'all') {
                 state.routerHistory = []
             }
         },

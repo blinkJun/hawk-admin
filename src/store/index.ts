@@ -1,40 +1,40 @@
-import { createStore,Store,useStore as baseUseStore } from 'vuex'
-import {InjectionKey} from 'vue'
+import { createStore, Store, useStore as baseUseStore } from 'vuex'
+import { InjectionKey } from 'vue'
 
 // modules
-import {menu,MenuState} from './modules/menu';
-import {account,AccountState} from './modules/account';
+import { menu, MenuState } from './modules/menu';
+import { account, AccountState } from './modules/account';
 
-export interface State{
-    collapse:boolean
+export interface State {
+    collapse: boolean
 }
 
 export interface AllState extends State {
-    menu:MenuState,
-    account:AccountState
+    menu: MenuState,
+    account: AccountState
 }
 
 // define injection key
 export const key: InjectionKey<Store<AllState>> = Symbol()
 
 const store = createStore<State>({
-    state(){
+    state() {
         return {
-            collapse:false
+            collapse: false
         }
     },
-    modules:{
+    modules: {
         menu,
         account
     },
-    mutations:{
-        setCollapseState(state:State,collapse:boolean){
+    mutations: {
+        setCollapseState(state: State, collapse: boolean) {
             state.collapse = collapse
         }
     }
 })
 
-export const useStore = ()=>{
+export const useStore = () => {
     return baseUseStore<AllState>(key)
 }
 
