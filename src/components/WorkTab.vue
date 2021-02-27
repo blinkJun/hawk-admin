@@ -1,6 +1,12 @@
 <template>
     <div class="worktab">
         <ul class="tabs" ref="tabs">
+            <li  
+                :class="{ 'activ-tab': '/' === activeTab }"
+                @click="clickWorktab('/')"
+            >
+                主页
+            </li>
             <li
                 v-for="(i, index) in worktabs"
                 :key="i.path"
@@ -8,13 +14,13 @@
                 :class="{ 'activ-tab': i.path === activeTab }"
                 @click="clickWorktab(i.path)"
             >
-                {{ i.title }}
+                {{ i.meta.title }}
                 <i
                     class="el-icon-close"
-                    @click.stop="closeWorktab('current', i.path)"
-                    v-if="index !== 0"
+                    @click.stop="closeWorktabCurrent(i)"
                 ></i>
             </li>
+            
         </ul>
 
         <div class="right">
@@ -45,21 +51,44 @@
 </template>
 
 <script lang="ts" >
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
+import { useRoute } from "vue-router";
+import { useStore } from "../store";
 export default defineComponent({
     setup() {
+        const route = useRoute()
+        const store = useStore()
         return {
-            activeTab:'/',
-            worktabs: [
-                {
-                    path:'/',
-                    title:'主页'
-                }
-            ],
-            closeWorktab: () => {},
-            clickWorktab: () => {},
+            store,
+            activeTab:computed(()=>route.path),
+            worktabs:computed(()=>store.state.menu.routerHistory)
         };
     },
+    methods:{
+        closeWorktab(type:string){
+            if(this.activeTab==='/'){
+                if(type==='left'){
+                    return false;
+                }
+                if(type==='right'||type==='other'||type==='all'){
+                    type = 'all'
+                }
+            }
+            this.store.commit('removeRouteHistory',{
+                type,
+                route:this.worktabs.find(route=>route.path===this.activeTab)
+            })
+        },
+        closeWorktabCurrent(route:any){
+            this.store.commit('removeRouteHistory',{
+                type:'current',
+                route:route
+            })
+        },
+        clickWorktab(path:string){
+            this.$router.push(path)
+        }
+    }
 });
 </script>
 
@@ -113,7 +142,10 @@ export default defineComponent({
             }
         }
         .activ-tab {
-            color: $primary-color;
+            color: $primary-color!important;
+            i{
+                color:$primary-color;
+            }
         }
     }
     .right {

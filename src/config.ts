@@ -6,5 +6,9 @@ export default {
     apiHost: envApiHost,
     publicPath: publicPath || '/',
     // 请求超时时间
-    timeoutMax: 20000
+    timeoutMax: 20000,
+    menus: {
+        // 面包屑历史导航忽略的路由
+        ignore: ['/', '/login', '/No-Auth']
+    }
 }

@@ -88,7 +88,10 @@ export default defineComponent ({
                         account:this.form.username,
                         password:this.form.password
                     })
-                    this.store.commit('setLoginState',true);
+                    this.store.commit('updateLocalUserState',{
+                        token:'hawk-admin',
+                        userName:'admin'
+                    });
                     ElMessage.success('登录成功！');
                 }catch(err){
                     console.log(err);
@@ -97,6 +100,7 @@ export default defineComponent ({
                     return false
                 }
                 this.onLogin = false
+                
                 const redirectUrl = this.$route.query.redirect_url
                 if (redirectUrl) {
                     this.$router.replace(redirectUrl as string)

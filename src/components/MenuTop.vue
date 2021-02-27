@@ -91,7 +91,7 @@ export default defineComponent({
         },
         handleUserSettingCommand(command:string){
             if(command==='loginOut'){
-                this.store.commit('setLoginState',false)
+                this.store.commit('clearLocalUserState')
                 this.$router.push('/login')
             }
         }

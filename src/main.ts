@@ -17,6 +17,8 @@ import store,{key} from './store/index'
 // 配置
 import config from './config'
 
+// 初始化store;
+store.commit('initLocalUserState')
 
 const app = createApp(App)
 
