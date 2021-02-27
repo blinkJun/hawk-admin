@@ -1,15 +1,16 @@
 <template>
     <div class="worktab">
-        <ul class="tabs" ref="tabs">
+        <transition-group tag="ul" name="route-tab" class="route-history tabs" ref="tabs" >
             <li  
                 :class="{ 'activ-tab': '/' === activeTab }"
+                :key="'/'"
                 @click="clickWorktab('/')"
             >
                 主页
             </li>
             <li
                 v-for="(i, index) in worktabs"
-                :key="i.path"
+                :key="i.fullPath"
                 :ref="i.path"
                 :class="{ 'activ-tab': i.path === activeTab }"
                 @click="clickWorktab(i.path)"
@@ -20,8 +21,7 @@
                     @click.stop="closeWorktabCurrent(i)"
                 ></i>
             </li>
-            
-        </ul>
+        </transition-group>
 
         <div class="right">
             <el-dropdown @command="closeWorktab" >
@@ -84,6 +84,11 @@ export default defineComponent({
                 type:'current',
                 route:route
             })
+            if(this.worktabs.length>0){
+                this.$router.push(this.worktabs[this.worktabs.length-1].path)
+            }else{
+                this.$router.push('/')
+            }
         },
         clickWorktab(path:string){
             this.$router.push(path)
@@ -122,20 +127,17 @@ export default defineComponent({
             padding: 0 12px;
             cursor: pointer;
             border-top: 2px solid transparent;
-            transition: all 0.1s;
             background: #fff;
             border-radius: 3px;
             margin-right: 6px;
             &:hover {
                 color: #515a6e;
-                transition: color 0.2s;
             }
             i {
                 color: #808695;
                 padding: 2px;
                 margin-left: 5px;
                 border-radius: 50%;
-                transition: all 0.2s;
                 &:hover {
                     background: #eee;
                 }
@@ -171,6 +173,18 @@ export default defineComponent({
                 display: inline;
             }
         }
+    }
+    .tabs li{
+        transition: all .2s ease;
+    }
+
+    .route-tab-enter-from,
+    .route-tab-leave-to {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    .route-tab-leave-active{
+        position: absolute;
     }
 }
 .work-tab-setting .el-dropdown-menu__item{
