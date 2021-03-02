@@ -1,5 +1,6 @@
-import { Module, ActionContext } from 'vuex'
+import { Module } from 'vuex'
 import { State } from '../index'
+import httpClient from '../../api/http'
 
 interface TokenStoreConfig {
     tokenKey: string,
@@ -13,13 +14,10 @@ export interface AccountState {
     token: string | null
 }
 
-interface LoginParams {
-    account: string
-    password: any
-}
+
 interface LoginStateInfo {
     token: string,
-    userName: string
+    userInfo: any
 }
 
 export const account: Module<AccountState, State> = {
@@ -37,29 +35,27 @@ export const account: Module<AccountState, State> = {
             state.isLogin = status
         },
         updateLocalUserState(state, loginStateInfo: LoginStateInfo) {
-            const { token, userName } = loginStateInfo
+            const { token, userInfo } = loginStateInfo
             state.token = token
             const loginToken = {
                 token,
-                userInfo: {
-                    userName
-                }
+                userInfo: userInfo
             }
             localStorage.setItem(state.loginConfig.tokenKey, JSON.stringify(loginToken))
+            httpClient.defaults.headers['Authorization'] = `Bearer ${token}`
             state.isLogin = true
         },
         initLocalUserState(state) {
-            const localToken = localStorage.getItem(state.loginConfig.tokenKey)
-            const token = localToken
+            const localTokenConfig = localStorage.getItem(state.loginConfig.tokenKey)
 
-            if (token) {
-                const loginStateInfo = JSON.parse(token)
+            if (localTokenConfig) {
+                const loginStateInfo = JSON.parse(localTokenConfig)
                 state.token = loginStateInfo.token
-                state.userInfo = {
-                    userName: loginStateInfo.userName
-                }
+                state.userInfo = loginStateInfo.userInfo
+                httpClient.defaults.headers['Authorization'] = `Bearer ${state.token}`
                 state.isLogin = true
             } else {
+                delete httpClient.defaults.headers['Authorization']
                 state.isLogin = false
             }
         },
@@ -69,20 +65,7 @@ export const account: Module<AccountState, State> = {
             state.userInfo = {}
 
             localStorage.removeItem(state.loginConfig.tokenKey)
+            delete httpClient.defaults.headers['Authorization']
         },
-    },
-    actions: {
-        async login(context: ActionContext<AccountState, State>, params: LoginParams) {
-            const { account, password } = params
-            return new Promise<void>((resolve, reject) => {
-                if (account === 'blink' && password === 'admin') {
-                    setTimeout(() => {
-                        resolve()
-                    }, 2000)
-                } else {
-                    reject(new Error('账户密码不正确！'))
-                }
-            })
-        }
     }
 }

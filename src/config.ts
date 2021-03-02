@@ -1,5 +1,5 @@
-const envApiHost = import.meta.env.VITE_HOST
-const publicPath = import.meta.env.VITE_PUBLIC_PATH
+const envApiHost = import.meta.env.VITE_HOST as string
+const publicPath = import.meta.env.VITE_PUBLIC_PATH as string
 
 export default {
     // 对应环境的apiHost

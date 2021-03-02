@@ -28,6 +28,16 @@
                             <i class="el-icon-lock" slot="prepend" ></i>
                         </el-input>
                     </el-form-item>
+                    <el-form-item prop="validateCode" label="验证码" class="validate-field" >
+                        <el-input
+                            type="text"
+                            size="medium"
+                            @keyup.native.enter="submit"
+                            v-model="form.validateCode"
+                            placeholder="请输入验证码"
+                        ></el-input>
+                        <div class="svg" v-html="validateSVG" ></div>
+                    </el-form-item>
                     <el-button type="primary" class="login-btn" long size="large" @click="submit" :loading="onLogin" >{{onLogin?'登录中...':'登录'}}</el-button>
                 </el-form>
             </el-card>
@@ -41,12 +51,16 @@ import { ElFormContext } from 'element-plus/lib/el-form'
 import {defineComponent,getCurrentInstance,ref} from 'vue'
 import {useStore} from '../store/index'
 import { ElMessage } from 'element-plus';
+import {login,getLoginValidateCode} from '../api/index'
 export default defineComponent ({
     data: () => ({
         form: {
             username: '',
-            password: ''
+            password: '',
+            validateCode:'',
+            validateHash:{}
         },
+        validateSVG:"",
         ruleValidate: {
             username: [
                 {
@@ -61,6 +75,13 @@ export default defineComponent ({
                     message: '请输入密码',
                     trigger: 'blur'
                 }
+            ],
+            validateCode: [
+                {
+                    required: true,
+                    message: '请输入验证码',
+                    trigger: 'blur'
+                }
             ]
         }
     }),
@@ -69,6 +90,7 @@ export default defineComponent ({
         const store = useStore()
         const config = appContext.config.globalProperties.$config
         const onLogin = ref(false)
+        
         return {
             store,
             onLogin,
@@ -84,13 +106,15 @@ export default defineComponent ({
             if (valid) {
                 this.onLogin = true
                 try{
-                    await this.store.dispatch('login',{
+                    const {token,userInfo} = await login({
                         account:this.form.username,
-                        password:this.form.password
+                        password:this.form.password,
+                        validateCode:this.form.validateCode,
+                        validateCodeHash:this.form.validateHash
                     })
                     this.store.commit('updateLocalUserState',{
-                        token:'hawk-admin',
-                        userName:'admin'
+                        token:token,
+                        userInfo:userInfo
                     });
                     ElMessage.success('登录成功！');
                 }catch(err){
@@ -108,7 +132,24 @@ export default defineComponent ({
                     this.$router.replace('/')
                 }
             }
+        },
+        async initValidateCode(){
+            let validateSVG,validateHash
+            try{
+                const {validateCodeHash,svg} = await getLoginValidateCode()
+                validateSVG = svg
+                validateHash = validateCodeHash
+            }catch(err){
+                validateSVG = ""
+                validateHash = {}
+            }
+
+            this.validateSVG = validateSVG
+            this.form.validateHash = validateHash
         }
+    },
+    mounted(){
+        this.initValidateCode()
     }
 })
 </script>
@@ -157,6 +198,15 @@ export default defineComponent ({
         height:60px;
         display: block;
         margin:0 auto 10px;
+    }
+    .validate-field{
+        .el-form-item__content{
+            display: flex;
+        }
+        .svg{
+            width:120px;
+            margin-left:10px;
+        }
     }
 }
 
