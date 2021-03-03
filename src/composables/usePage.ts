@@ -6,26 +6,40 @@ interface TableConfig {
     limit?:number,
     pageSizeOpts?:number[]
 }
+const basePageConfig = {
+    page: 1,
+    limit: 10,
+    pageSizeOpts: [10, 20]
+}
 
-export const usePage = (route:RouteLocationNormalized,setTable:()=>void)=>{
+export const usePage = (
+    route:RouteLocationNormalized,
+    setTable:(tableConfig:TableConfig)=>void,
+    replacePageConfig:TableConfig = {}
+)=>{
 
-    const baseConfig = {
-        page: 1,
-        limit: 10,
-        pageSizeOpts: [10, 20]
+    // 将传入的配置和默认配置合并
+    const pageConfig:TableConfig = {
+        page:replacePageConfig.page || basePageConfig.page,
+        limit:replacePageConfig.limit || basePageConfig.limit,
+        pageSizeOpts:replacePageConfig.pageSizeOpts || basePageConfig.pageSizeOpts
     }
 
+    // 将默认配置和路由的配置合并
     const tableConfig:TableConfig = reactive({
-        page: Number(route.query.page) || baseConfig.page,
-        limit: Number(route.query.limit) || baseConfig.limit,
-        pageSizeOpts: [...baseConfig.pageSizeOpts]
+        page: Number(route.query.page) || pageConfig.page,
+        limit: Number(route.query.limit) || pageConfig.limit,
+        pageSizeOpts: pageConfig.pageSizeOpts
     })
 
     const updateTable = ()=>{
-        setTable&&setTable()
+        setTable&&setTable({
+            page:tableConfig.page,
+            limit:tableConfig.limit
+        })
     }
 
-    const tableUpdated = ({ page, limit }:TableConfig) => {
+    const toUpdateTable = ({ page, limit }:TableConfig) => {
         if (page !== tableConfig.page || limit !== tableConfig.limit) {
             router.push({
                 path: route.path,
@@ -34,13 +48,14 @@ export const usePage = (route:RouteLocationNormalized,setTable:()=>void)=>{
                     limit
                 })
             })
+        }else{
+            updateTable()
         }
-        updateTable()
     }
 
     const resetTable = ()=>{
-        tableUpdated({
-            page: 1,
+        toUpdateTable({
+            page: basePageConfig.page,
             limit: tableConfig.limit
         })
     }
@@ -48,16 +63,17 @@ export const usePage = (route:RouteLocationNormalized,setTable:()=>void)=>{
     onBeforeRouteUpdate((to, from, next)=>{
         const { page, limit } = to.query
         Object.assign(tableConfig, {
-            page: Number(page) || baseConfig.page,
-            limit: Number(limit) || baseConfig.limit
+            page: Number(page) || pageConfig.page,
+            limit: Number(limit) || pageConfig.limit
         })
         next()
+        updateTable()
     })
 
     return {
         tableConfig,
         updateTable,
-        tableUpdated,
+        toUpdateTable,
         resetTable
     }
 }

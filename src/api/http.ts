@@ -5,8 +5,13 @@ import config from '../config'
 import router from '../routes/index'
 import store from '../store/index'
 
+export enum Code {
+    error=-1,
+    susccess=0
+}
+
 export interface NomalizeRes {
-    code:-1 | 0,
+    code:Code,
     data?:any,
     msg:string
 }

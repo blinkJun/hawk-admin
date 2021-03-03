@@ -2,40 +2,45 @@
  * @Author liangjun
  * @LastEditors liangjun
  * @Date 2021-03-02 11:00:37
- * @LastEditTime 2021-03-02 15:15:19
+ * @LastEditTime 2021-03-03 14:48:05
  * @Description 
  */
 
 import httpClient,{NomalizeRes} from '../http'
 
+
+// 登录参数
 interface LoginParams {
     account: string
     password: any,
     validateCode:string|number,
+    // 验证码hash，获取验证码时可获得
     validateCodeHash:any
 }
 
-// 登录接口
-interface LoginData {
+// 登录完成后获得数据
+interface LoginSuccessResult {
     userInfo:any,
     token:string
 }
-interface LoginDataRes extends NomalizeRes {
-    data:LoginData
-}
-
 // 验证码接口
 interface ValidateCode {
     svg:string,
     validateCodeHash:any
 }
-interface ValidateCodeRes extends NomalizeRes{
-    data:ValidateCode
+
+
+
+// 扩展axios返回的登录结果，可忽略不扩展
+interface LoginSuccessRes extends NomalizeRes {
+    data:LoginSuccessResult
 }
 
+
+
 // 登录
-export async function login (params:LoginParams):Promise<LoginData> {
-    const {status,request,data} = await httpClient.post<LoginDataRes>('/account/login',params)
+export async function login (params:LoginParams):Promise<LoginSuccessResult> {
+    const {status,request,data} = await httpClient.post<LoginSuccessRes>('/account/login',params)
     if(status!==200){
         throw new Error(request.statusText)
     }
@@ -49,7 +54,7 @@ export async function login (params:LoginParams):Promise<LoginData> {
 
 // 获取验证码
 export async function getLoginValidateCode ():Promise<ValidateCode> {
-    const {status,data,request} = await httpClient.get<ValidateCodeRes>('/account/getValidateCode')
+    const {status,data,request} = await httpClient.get('/account/getValidateCode')
     if(status!==200){
         throw new Error(request.statusText)
     }

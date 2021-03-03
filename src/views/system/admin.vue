@@ -10,12 +10,12 @@
                 </div>
             </template>
             <h-table
-                :list="tableData.list"
+                :list="tableData.rows"
                 :limit="tableConfig.limit"
-                :total="tableData.total"
+                :total="tableData.count"
                 :pageSizeOpts="tableConfig.pageSizeOpts"
                 :currentPage="tableConfig.page"
-                @updete="tableUpdated"
+                @update="toUpdateTable($event)"
             >
                 <el-table-column label="id" prop="id" width="100"></el-table-column>
                 <el-table-column label="名称" prop="name" ></el-table-column>
@@ -27,25 +27,29 @@
 
 <script>
 import { defineComponent, onMounted, reactive } from "vue";
-import HTable from "../../components/HTable.vue";
-import adminJson from '../../assets/response/admin'
-import {usePage} from '../../composables/usePage'
 import { useRoute } from "vue-router";
+import { usePage } from '../../composables/usePage';
+import { getAdminList  } from '../../api/index'
+
+import HTable from "../../components/HTable.vue";
 export default defineComponent({
     components: { HTable },
     name: "page-admin",
     setup(props,ctx){
-        const tableData = reactive({
-            list:[],
-            total:0
+
+        let tableData = reactive({
+            rows:[],
+            count:0
         })
-        const setTable = ()=>{
-            tableData.list = adminJson
+        const setTable = async (tableConfig)=>{
+            const listData = await getAdminList(tableConfig)
+            tableData.rows = listData.rows
+            tableData.count = listData.count
         }
         const showCreateForm = ()=>{
-
+            
         }
-        const {tableConfig , tableUpdated , resetTable } = usePage(useRoute(),setTable)
+        const { tableConfig ,toUpdateTable, resetTable } = usePage(useRoute(),setTable)
 
         onMounted(()=>{
             resetTable()
@@ -54,7 +58,7 @@ export default defineComponent({
         return {
             tableData,
             tableConfig,
-            tableUpdated,
+            toUpdateTable,
             showCreateForm
         }
     }

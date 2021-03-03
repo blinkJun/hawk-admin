@@ -242,17 +242,14 @@ export default defineComponent({
             context.emit('update',{
                 page: val,
                 limit: props.limit
-            })  
+            })
         }
         
-        // 修改当前页码
+        // 修改当前每页条数
         const changeSize = (val:number)=>{
-            // changeSize时iview的page组件会自动发送一个page=1的changePage事件，此事件会在changeSize之后执行，limit会冲突
-            nextTick(() => {
-                context.emit('updete', {
-                    page: props.currentPage,
-                    limit: val
-                })
+            context.emit('update', {
+                page: props.currentPage,
+                limit: val
             })
         }
 
