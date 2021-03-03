@@ -32,3 +32,14 @@ body{
     display: none;
 }
 
+// 弹窗表单的底部默认向右对齐
+.edit-form-dialog-footer{
+    text-align: right;
+}
+
+// 确认弹窗
+.el-popconfirm{
+    p{
+        margin:10px 0;
+    }
+}

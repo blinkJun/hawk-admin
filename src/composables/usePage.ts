@@ -1,7 +1,8 @@
 import {reactive} from 'vue'
 import {RouteLocationNormalized,onBeforeRouteUpdate} from 'vue-router'
 import router from '../routes/index'
-interface TableConfig {
+
+export interface TableConfig {
     page?:number,
     limit?:number,
     pageSizeOpts?:number[]
@@ -14,7 +15,7 @@ const basePageConfig = {
 
 export const usePage = (
     route:RouteLocationNormalized,
-    setTable:(tableConfig:TableConfig)=>void,
+    setTable:(tableConfig:TableConfig)=>Promise<void>,
     replacePageConfig:TableConfig = {}
 )=>{
 

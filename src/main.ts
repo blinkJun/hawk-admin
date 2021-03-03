@@ -5,6 +5,7 @@ import App from './App.vue'
 
 // ui
 import ElementPlus from 'element-plus';
+import locale from 'element-plus/lib/locale/lang/zh-cn'
 import './style/element-variables.scss';
 import './style/app.scss';
 
@@ -24,7 +25,7 @@ const app = createApp(App)
 
 app.use(router)
 app.use(store,key)
-app.use(ElementPlus,{ size: 'small', zIndex: 1000 })
+app.use(ElementPlus,{ size: 'small', zIndex: 1000 , locale })
 
 app.config.globalProperties.$config = config
 
