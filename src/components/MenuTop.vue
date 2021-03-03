@@ -33,10 +33,10 @@
                         <div class="user-preview">
                             <img
                                 class="cover"
-                                src="/images/logo.png"
+                                :src="userInfo?userInfo.head_pic:'/images/logo.png'"
                                 style="float: left"
                             />
-                            <span class="name">admin</span>
+                            <span class="name">{{userInfo?userInfo.name:'匿名'}}</span>
                         </div>
                         <template #dropdown>
                             <el-dropdown-menu class="user-setting-list" >
@@ -71,6 +71,7 @@ export default defineComponent({
         return {
             store,
             onFullScreen,
+            userInfo:computed(()=>store.state.account.userInfo),
             collapse: computed(() => store.state.collapse),
             handleCollapse: (collapse: boolean) =>
                 store.commit("setCollapseState", collapse),

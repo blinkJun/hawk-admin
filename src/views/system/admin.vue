@@ -196,7 +196,7 @@ export default defineComponent({
                     editingForm.value = false
                     updateTable()
                 }catch(err){
-                    ElMessage.error(`创建失败：${err.message}`)
+                    ElMessage.error(err.message)
                     console.log(err)
                 }
             }
@@ -210,7 +210,7 @@ export default defineComponent({
                     editingForm.value = false
                     updateTable()
                 }catch(err){
-                    ElMessage.error(`更新失败：${err.message}`)
+                    ElMessage.error(err.message)
                     console.log(err)
                 }
             }
@@ -222,7 +222,7 @@ export default defineComponent({
                 editingForm.value = false
                 updateTable()
             }catch(err){
-                ElMessage.error(`删除失败：${err.message}`)
+                ElMessage.error(err.message)
                 console.log(err)
             }
         }
