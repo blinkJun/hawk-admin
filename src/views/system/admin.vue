@@ -1,104 +1,101 @@
 <template>
-    <div class="page admin">
-        <el-card>
-            <template #header>
-                <div>
-                    <el-button
-                        type="primary"
-                        @click.native="showCreateForm"
-                    >新增</el-button>
-                    <el-button
-                        type="default"
-                        @click.native="updateTable"
-                    >刷新</el-button>
-                </div>
-            </template>
+    <el-card class="page admin" shadow="false" >
+        <template #header>
+            <div>
+                <el-button
+                    type="primary"
+                    @click.native="showCreateForm"
+                >新增</el-button>
+                <el-button
+                    type="default"
+                    @click.native="updateTable"
+                >刷新</el-button>
+            </div>
+        </template>
 
-            <h-table
-                :list="tableData.rows"
-                :limit="tableConfig.limit"
-                :total="tableData.count"
-                :pageSizeOpts="tableConfig.pageSizeOpts"
-                :currentPage="tableConfig.page"
-                @update="toUpdateTable($event)"
+        <h-table
+            :list="tableData.rows"
+            :limit="tableConfig.limit"
+            :total="tableData.count"
+            :pageSizeOpts="tableConfig.pageSizeOpts"
+            :currentPage="tableConfig.page"
+            @update="toUpdateTable($event)"
+        >
+            <el-table-column label="id" prop="id" width="100"></el-table-column>
+            <el-table-column label="名称" prop="name" ></el-table-column>
+            <el-table-column label="所属部门" prop="dept_id" width="140"></el-table-column>
+            <el-table-column label="邮箱" prop="email" width="180"></el-table-column>
+            <el-table-column label="状态" width="90">
+                <template #default="scope">
+                    <el-tag :type="scope.row.status===1?'success':'error'" >
+                        {{scope.row.status===1?'正常':'禁用'}}
+                    </el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column label="创建日期" width="175">
+                <template #default="scope">
+                    {{scope.row.created_at}}
+                </template>
+            </el-table-column>
+            <el-table-column
+                fixed="right"
+                label="操作"
+                width="150"
             >
-                <el-table-column label="id" prop="id" width="100"></el-table-column>
-                <el-table-column label="名称" prop="name" ></el-table-column>
-                <el-table-column label="所属部门" prop="dept_id" width="140"></el-table-column>
-                <el-table-column label="邮箱" prop="email" width="180"></el-table-column>
-                <el-table-column label="状态" width="90">
-                    <template #default="scope">
-                        <el-tag :type="scope.row.status===1?'success':'error'" >
-                            {{scope.row.status===1?'正常':'禁用'}}
-                        </el-tag>
-                    </template>
-                </el-table-column>
-                <el-table-column label="创建日期" width="175">
-                    <template #default="scope">
-                        {{scope.row.created_at}}
-                    </template>
-                </el-table-column>
-                <el-table-column
-                    fixed="right"
-                    label="操作"
-                    width="150"
-                >
-                    <template #default="scope">
-                        <el-button size="mini" @click="showEditForm(scope.row)">编辑</el-button>
-                        <el-popconfirm
-                            title="确定删除吗？"
-                            @confirm="deleteSubmit(scope.row.id)"
-                        >
-                            <template #reference>
-                                <el-button size="mini" type="danger" >删除</el-button>
-                            </template>
-                        </el-popconfirm>
-                    </template>
-                </el-table-column>
-            </h-table>
+                <template #default="scope">
+                    <el-button size="mini" @click="showEditForm(scope.row)">编辑</el-button>
+                    <el-popconfirm
+                        title="确定删除吗？"
+                        @confirm="deleteSubmit(scope.row.id)"
+                    >
+                        <template #reference>
+                            <el-button size="mini" type="danger" >删除</el-button>
+                        </template>
+                    </el-popconfirm>
+                </template>
+            </el-table-column>
+        </h-table>
 
-            <el-dialog 
-                v-model="editingForm" 
-                :title="creating?'创建':'修改'" 
-                width="500px" 
-            >
-                <el-form ref="formEl" :model="form.data" :rules="form.ruleValidate" label-width="80px" >
-                    <el-form-item label="用户名" prop="name">
-                        <el-input type="text"  v-model="form.data.name" placeholder="用户名"></el-input>
-                    </el-form-item>
-                    <el-form-item label="密码" prop="password"  >
-                        <el-input type="password" v-model="form.data.password" placeholder="请输入密码"></el-input>
-                    </el-form-item>
-                    <el-form-item label="手机号" prop="phone_number" >
-                        <el-input v-model.number="form.data.phone_number" placeholder="请输入用户邮箱"></el-input>
-                    </el-form-item>
-                    <el-form-item label="邮箱" prop="email" >
-                        <el-input v-model="form.data.email" placeholder="请输入用户邮箱"></el-input>
-                    </el-form-item>
-                    <!-- <el-form-item label="所属部门" prop="dept_id" >
-                        <el-cascader placeholder="所属部门" :options="departmentList" v-model="form.data.dept_id"></el-cascader>
-                    </el-form-item> -->
-                    <!-- <el-form-item label="身份" prop="role_id" >
-                        <el-checkbox-group v-model="form.data.role_id">
-                            <el-checkbox v-for="role in roleSelectList"  :key="role.createTime" :label="role.roleId">{{role.roleName}}</el-checkbox>
-                        </el-checkbox-group>
-                    </el-form-item> -->
-                    <el-form-item label="状态">
-                        <el-radio-group v-model="form.data.status" >
-                            <el-radio :label="1">正常</el-radio>
-                            <el-radio :label="0">禁用</el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-                </el-form>
-                <div slot="footer" class="edit-form-dialog-footer" >
-                    <el-button type="default" @click="editingForm=false">取消</el-button>
-                    <el-button type="primary" @click="createSubmit" v-if="creating">创建</el-button>
-                    <el-button type="primary" @click="updateSubmit" v-else>修改</el-button>
-                </div>
-            </el-dialog>
-        </el-card>
-        
-    </div>
+        <el-dialog 
+            v-model="editingForm" 
+            :title="creating?'创建':'修改'" 
+            width="500px" 
+        >
+            <el-form ref="formEl" :model="form.data" :rules="form.ruleValidate" label-width="80px" >
+                <el-form-item label="用户名" prop="name">
+                    <el-input type="text"  v-model="form.data.name" placeholder="用户名"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="password"  >
+                    <el-input type="password" v-model="form.data.password" placeholder="请输入密码"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号" prop="phone_number" >
+                    <el-input v-model.number="form.data.phone_number" placeholder="请输入用户邮箱"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="email" >
+                    <el-input v-model="form.data.email" placeholder="请输入用户邮箱"></el-input>
+                </el-form-item>
+                <!-- <el-form-item label="所属部门" prop="dept_id" >
+                    <el-cascader placeholder="所属部门" :options="departmentList" v-model="form.data.dept_id"></el-cascader>
+                </el-form-item> -->
+                <!-- <el-form-item label="身份" prop="role_id" >
+                    <el-checkbox-group v-model="form.data.role_id">
+                        <el-checkbox v-for="role in roleSelectList"  :key="role.createTime" :label="role.roleId">{{role.roleName}}</el-checkbox>
+                    </el-checkbox-group>
+                </el-form-item> -->
+                <el-form-item label="状态">
+                    <el-radio-group v-model="form.data.status" >
+                        <el-radio :label="1">正常</el-radio>
+                        <el-radio :label="0">禁用</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="edit-form-dialog-footer" >
+                <el-button type="default" @click="editingForm=false">取消</el-button>
+                <el-button type="primary" @click="createSubmit" v-if="creating">创建</el-button>
+                <el-button type="primary" @click="updateSubmit" v-else>修改</el-button>
+            </div>
+        </el-dialog>
+    </el-card>
 </template>
 
 <script lang=ts >
@@ -108,7 +105,7 @@ import { usePage,TableConfig } from '../../composables/usePage';
 import { getAdminList, createAdmin, updateAdmin, deleteAdmin, Admin  } from '../../api/index'
 import { isNotEmpt,isPhoneNumber } from '../../plugins/validate'
 
-import {ElMessage,ElPopconfirm} from 'element-plus'
+import {ElMessage} from 'element-plus'
 import HTable from "../../components/HTable.vue";
 
 interface TableData {

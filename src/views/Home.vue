@@ -2,7 +2,7 @@
     <el-container class="home container" :class="{collapse:collapse}" >
         <menu-left />
         <menu-top />
-        <el-container class="page"  >
+        <el-container class="page-wrap"  >
             <router-view v-slot="{ Component }">
                 <transition name="zoom-fade">
                     <component :is="Component" />
@@ -30,16 +30,20 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped >
+<style lang="scss" >
 .home.container{
     min-height: 100vh;
-    padding:108px 0 15px $menu-left-open-width;
+    padding:104px 0 15px $menu-left-open-width;
     transition: all 0.3s ease-in-out;
     &.collapse{
         padding-left:$menu-left-shrink-width;
     }
-    >.page {
-        padding:0 10px;
+    >.page-wrap {
+        padding:0 15px;
+        min-height: calc(100vh - 120px);
+        >.page >.el-card{
+            min-height:100%;
+        }
     }
 }
 
