@@ -35,6 +35,10 @@ httpClient.interceptors.request.use(function (reqConfig) {
 
 // 处理请求结果
 httpClient.interceptors.response.use(function (response) {
+    return response
+}, function (error) {
+    const response = error.response
+
     // token过期
     const { status } = response
     if (status === 401) {
@@ -42,10 +46,7 @@ httpClient.interceptors.response.use(function (response) {
         store.commit('clearLocalUserState')
         router.push('/login')
     }
-    return response
-}, function (error) {
-    const response = error.response
-
+    
     return response
 })
 
