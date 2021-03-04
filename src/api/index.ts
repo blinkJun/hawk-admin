@@ -8,4 +8,5 @@
 
 export * from './system/account'
 export * from './system/admin'
+export * from './system/department'
 

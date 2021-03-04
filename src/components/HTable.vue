@@ -75,6 +75,12 @@
 import { defineComponent, nextTick, reactive, ref, watch,SetupContext } from "vue"
 import {ElTable,ElMessage} from 'element-plus'
 
+export interface TableData {
+    rows:any[],
+    count:number,
+    [propName:string]:any
+} 
+
 export default defineComponent({
     name:'hawk-table',
     props:{

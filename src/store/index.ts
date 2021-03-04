@@ -4,6 +4,7 @@ import { InjectionKey } from 'vue'
 // modules
 import { menu, MenuState } from './modules/menu';
 import { account, AccountState } from './modules/account';
+import { depts, DepartmentState } from './modules/department';
 
 export interface State {
     collapse: boolean
@@ -11,7 +12,8 @@ export interface State {
 
 export interface AllState extends State {
     menu: MenuState,
-    account: AccountState
+    account: AccountState,
+    depts:DepartmentState
 }
 
 // define injection key
@@ -25,7 +27,8 @@ const store = createStore<State>({
     },
     modules: {
         menu,
-        account
+        account,
+        depts
     },
     mutations: {
         setCollapseState(state: State, collapse: boolean) {

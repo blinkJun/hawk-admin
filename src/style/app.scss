@@ -1,45 +1,45 @@
 @import "./reset";
 @import "./pages/login.scss";
 
-body{
+body {
     background-color: #efefef;
 }
 
 /* router view transition */
 .zoom-fade-enter-active,
 .zoom-fade-leave-active {
-  transition: transform 0.35s, opacity 0.28s ease-in-out;
+    transition: transform 300ms ease, opacity 300ms linear;
 }
 
 .zoom-fade-enter-from {
-  opacity: 0;
-  transform: scale(0.9);
+    opacity: 0;
+    transform: translateX(-10px);
 }
 
 .zoom-fade-leave-to {
-  opacity: 0;
-  transform: scale(1.1);
+    opacity: 0;
+    transform: translateX(10px);
 }
 
 // 权限菜单
-*[disabled=true]{
-    color:#999;
+*[disabled="true"] {
+    color: #999;
     cursor: not-allowed;
     pointer-events: none;
 }
 
-.el-menu-item[disabled=true]{
+.el-menu-item[disabled="true"] {
     display: none;
 }
 
 // 弹窗表单的底部默认向右对齐
-.edit-form-dialog-footer{
+.edit-form-dialog-footer {
     text-align: right;
 }
 
 // 确认弹窗
-.el-popconfirm{
-    p{
-        margin:10px 0;
+.el-popconfirm {
+    p {
+        margin: 10px 0;
     }
 }

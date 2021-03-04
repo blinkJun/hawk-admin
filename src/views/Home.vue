@@ -4,7 +4,7 @@
         <menu-top />
         <el-container class="page-wrap"  >
             <router-view v-slot="{ Component }">
-                <transition name="zoom-fade">
+                <transition name="zoom-fade" mode="out-in" >
                     <component :is="Component" />
                 </transition>
             </router-view>
@@ -33,16 +33,19 @@ export default defineComponent({
 <style lang="scss" >
 .home.container{
     min-height: 100vh;
-    padding:104px 0 15px $menu-left-open-width;
+    padding:104px 0 10px $menu-left-open-width;
     transition: all 0.3s ease-in-out;
     &.collapse{
         padding-left:$menu-left-shrink-width;
     }
     >.page-wrap {
         padding:0 15px;
-        min-height: calc(100vh - 120px);
-        >.page >.el-card{
-            min-height:100%;
+        min-height: calc(100vh - 115px);
+        >.page {
+            width:100%;
+            >.el-card{
+                min-height:100%;
+            }
         }
     }
 }

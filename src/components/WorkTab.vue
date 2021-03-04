@@ -1,6 +1,6 @@
 <template>
     <div class="worktab">
-        <transition-group tag="ul" name="route-tab" class="route-history tabs" ref="tabs" >
+        <transition-group tag="ul" mode="out-in" name="route-tab" class="route-history tabs" ref="tabs" >
             <li  
                 :class="{ 'activ-tab': '/' === activeTab }"
                 :key="'/'"

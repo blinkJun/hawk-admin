@@ -23,7 +23,7 @@
         >
             <el-table-column label="id" prop="id" width="100"></el-table-column>
             <el-table-column label="名称" prop="name" ></el-table-column>
-            <el-table-column label="所属部门" prop="dept_id" width="140"></el-table-column>
+            <el-table-column label="所属部门" prop="deptLabel" width="140"></el-table-column>
             <el-table-column label="邮箱" prop="email" width="180"></el-table-column>
             <el-table-column label="状态" width="90">
                 <template #default="scope">
@@ -74,9 +74,9 @@
                 <el-form-item label="邮箱" prop="email" >
                     <el-input v-model="form.data.email" placeholder="请输入用户邮箱"></el-input>
                 </el-form-item>
-                <!-- <el-form-item label="所属部门" prop="dept_id" >
+                <el-form-item label="所属部门" prop="dept_id" >
                     <el-cascader placeholder="所属部门" :options="departmentList" v-model="form.data.dept_id"></el-cascader>
-                </el-form-item> -->
+                </el-form-item>
                 <!-- <el-form-item label="身份" prop="role_id" >
                     <el-checkbox-group v-model="form.data.role_id">
                         <el-checkbox v-for="role in roleSelectList"  :key="role.createTime" :label="role.roleId">{{role.roleName}}</el-checkbox>
@@ -99,24 +99,22 @@
 </template>
 
 <script lang=ts >
-import { defineComponent, onMounted, reactive, ref,SetupContext } from "vue";
+import { defineComponent, onMounted, reactive, ref, SetupContext, computed } from "vue";
 import { useRoute } from "vue-router";
+import { useStore } from "../../store/index";
 import { usePage,TableConfig } from '../../composables/usePage';
-import { getAdminList, createAdmin, updateAdmin, deleteAdmin, Admin  } from '../../api/index'
+import { getAdminList, createAdmin, updateAdmin, deleteAdmin, Admin ,getDeptList  } from '../../api/index'
 import { isNotEmpt,isPhoneNumber } from '../../plugins/validate'
 
 import {ElMessage} from 'element-plus'
-import HTable from "../../components/HTable.vue";
+import HTable,{TableData} from "../../components/HTable.vue";
 
-interface TableData {
-    rows:any[],
-    count:number
-}
+
 export default defineComponent({
-    components: { HTable },
     name: "page-admin",
+    components: { HTable },
     setup(props,ctx:SetupContext){
-
+        const store = useStore()
 
         // 表格
         const tableData:TableData = reactive({
@@ -129,10 +127,21 @@ export default defineComponent({
                     page:tableConfig.page!,
                     limit:tableConfig.limit!
                 })
+                // 获取部门
+                const depts = await getDeptList({
+                    page:1,
+                    limit:8888
+                })
+                // 给每个用户设置部门名称
+                rows.forEach(user=>{
+                    user.deptLabel = depts.rows.find(dept=>dept.id===Number(user.dept_id))?.name
+                })
+                store.commit('setDepartmentList',depts.rows)
+
                 tableData.rows = rows
                 tableData.count = count
             }catch(err){
-                
+                ElMessage.error(err.message)
             }
         }
         const { tableConfig ,updateTable, toUpdateTable, resetTable } = usePage(useRoute(),setTable)
@@ -148,7 +157,7 @@ export default defineComponent({
             password: 'admin',
             phone_number: 18520879578,
             email: '530080147@qq.com',
-            dept_id: 1,
+            dept_id: [4],
             role_id: 1,
             status: 1,
             head_pic:"/images/logo.png"
@@ -184,11 +193,31 @@ export default defineComponent({
                 ]
             }
         })
+        const parseDepartmentData = (list:any, start = []):any[] | null => {
+            for (const item of list) {
+                // 与当前的部门id相同 返回级联部门结构
+                if (item.value === Number(form.data.dept_id)) {
+                    return start.concat(item.value)
+                } else {
+                    // 与当前部门id不同 查询其子级
+                    if (item.children && item.children.length) {
+                        const depts = parseDepartmentData(item.children, start.concat(item.value))
+                        // 子级查询到匹配部门id则直接返回
+                        if (depts) {
+                            return depts
+                        }
+                    }
+                }
+            }
+            // 否则返回空
+            return null
+        }
         const createSubmit = async ()=>{
             const validateSuccess = await (formEl.value as any).validate()
             if(validateSuccess){
                 try{
-                    await createAdmin(form.data)
+                    const dept_id = form.data.dept_id[form.data.dept_id.length - 1]
+                    await createAdmin({...form.data,dept_id})
                     ElMessage.success('创建成功！')
                     editingForm.value = false
                     updateTable()
@@ -201,8 +230,12 @@ export default defineComponent({
         const updateSubmit = async ()=>{
             const validateSuccess = await (formEl.value as any).validate()
             if(validateSuccess){
+                let dept_id = form.data.dept_id
+                if(Array.isArray(dept_id)){
+                    dept_id = dept_id[dept_id.length - 1]
+                }
                 try{
-                    await updateAdmin(form.data)
+                    await updateAdmin({...form.data,dept_id})
                     ElMessage.success('更新成功！')
                     editingForm.value = false
                     updateTable()
@@ -227,11 +260,13 @@ export default defineComponent({
             creating.value = true
             editingForm.value = true
             form.data = JSON.parse(JSON.stringify(formData))
+            form.data.dept_id = parseDepartmentData(store.state.depts.departmentList)
         }
         const showEditForm = (admin:Admin.Item)=>{
             creating.value = false
             editingForm.value = true
             form.data = JSON.parse(JSON.stringify(admin))
+            form.data.dept_id = parseDepartmentData(store.state.depts.departmentList)
         }
 
 
@@ -241,6 +276,7 @@ export default defineComponent({
         })
 
         return {
+            departmentList:computed(()=>store.state.depts.departmentList),
             tableData,
             tableConfig,
             updateTable,
@@ -259,9 +295,3 @@ export default defineComponent({
     }
 });
 </script>
-
-<style lang="scss" >
-.page.admin{
-    width:100%;
-}
-</style>
