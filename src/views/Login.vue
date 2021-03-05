@@ -36,7 +36,7 @@
                             v-model="form.validateCode"
                             placeholder="请输入验证码"
                         ></el-input>
-                        <div class="svg" v-html="validateSVG" ></div>
+                        <div class="svg" @click="initValidateCode" v-html="validateSVG" ></div>
                     </el-form-item>
                     <el-button type="primary" class="login-btn" long size="large" @click="submit" :loading="onLogin" >{{onLogin?'登录中...':'登录'}}</el-button>
                 </el-form>

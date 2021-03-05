@@ -13,15 +13,15 @@ export const toTree = function (list:any, itemKey = 'id', topMenuId = 0,parentId
         menu.title = menu.name
         menu.label = menu.name
         menu.value = menu[itemKey]
-        if (menu[parentIdKey] === topMenuId) {
+        const parentId = Number(menu[parentIdKey])
+        if ( parentId === topMenuId) {
             menu.expand = true
             tree.push(menu)
-            list[i] = null
         } else {
-            if (treeMap[menu[parentIdKey]]) {
-                treeMap[menu[parentIdKey]].push(menu)
+            if (treeMap[parentId]) {
+                treeMap[parentId].push(menu)
             } else {
-                treeMap[menu[parentIdKey]] = [menu]
+                treeMap[parentId] = [menu]
             }
         }
     }
@@ -39,4 +39,38 @@ export const toTree = function (list:any, itemKey = 'id', topMenuId = 0,parentId
     createInfinite(tree)
 
     return tree
+}
+
+/**
+ * @method treeToCascaderValue
+ * @description 树形数据转换为级联值
+ * @param tree 树形结构
+ * @param focusId 当前选中的id
+ * @param itemKey 树形结构需要取出对比的键
+ * @return [1,2,3] 树形结构数组
+ */
+export const  treeToCascaderValue = function(tree:any[], focusId:string |number , itemKey= 'id',){
+
+    const parseData = function(tree:any[], start = []):any[]{
+        for (const item of tree) {
+            // 与当前的部门id相同 返回级联部门结构
+            const treeItemKeyValue = item[itemKey]
+            if (treeItemKeyValue === Number(focusId)) {
+                return start.concat(treeItemKeyValue)
+            } else {
+                // 与当前部门id不同 查询其子级
+                if (item.children && item.children.length) {
+                    const chilrenTree = parseData(item.children, start.concat(treeItemKeyValue))
+                    // 子级查询到匹配部门id则直接返回
+                    if (chilrenTree.length>0) {
+                        return chilrenTree
+                    }
+                }
+            }
+        }
+        // 否则返回空
+        return []
+    }
+
+    return parseData(tree)
 }

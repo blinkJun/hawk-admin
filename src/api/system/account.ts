@@ -2,7 +2,7 @@
  * @Author liangjun
  * @LastEditors liangjun
  * @Date 2021-03-02 11:00:37
- * @LastEditTime 2021-03-03 14:48:05
+ * @LastEditTime 2021-03-05 17:02:32
  * @Description 
  */
 
@@ -47,7 +47,7 @@ export async function login (params:LoginParams):Promise<LoginSuccessResult> {
     if (data.code===0) {
         return data.data
     } else {
-        const errMsg = `获取h5验证码失败：${decodeURIComponent(data.msg)}`
+        const errMsg = `登录失败：${decodeURIComponent(data.msg)}`
         throw new Error(errMsg)
     }
 }

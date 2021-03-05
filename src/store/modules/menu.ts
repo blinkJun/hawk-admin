@@ -1,13 +1,17 @@
 import { Module } from 'vuex'
+import { RouteRecordNormalized } from 'vue-router'
+import { toTree } from '../../plugins/utils'
 import { State } from '../index'
 import { systemRouteConfig, systemRoutes } from '../../routes/childrens/system'
 import config from '../../config'
-import { RouteRecordNormalized } from 'vue-router'
 
 export interface MenuState {
     leftMenu: any[],
     focusSideMenuPath: string,
-    routerHistory: any[]
+    routerHistory: any[],
+    menusSelect:any[],
+    menusList:any[],
+    levelList:any[]
 }
 interface RemoveRoute {
     type: string,
@@ -23,7 +27,14 @@ export const menu: Module<MenuState, State> = {
             }
         ],
         focusSideMenuPath: '',
-        routerHistory: []
+        routerHistory: [],
+        menusList: [],
+        menusSelect: [],
+        levelList:[
+            { text: '目录', value: 1 },
+            { text: '菜单', value: 2 },
+            { text: '按钮', value: 3 }
+        ]
     }),
     mutations: {
         // 定位当前所在菜单
@@ -85,5 +96,12 @@ export const menu: Module<MenuState, State> = {
                 state.routerHistory = []
             }
         },
+        // 设置菜单树
+        setMenusSelect: (state, data) => {
+            state.menusSelect = toTree(data, 'id', 0,'parent_id')
+        },
+        setMenusList: (state, data) => {
+            state.menusList = toTree(data, 'id', 1,'parent_id')
+        }
     }
 }

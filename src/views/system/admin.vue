@@ -24,6 +24,7 @@
             <el-table-column label="id" prop="id" width="100"></el-table-column>
             <el-table-column label="名称" prop="name" ></el-table-column>
             <el-table-column label="所属部门" prop="deptLabel" width="140"></el-table-column>
+            <el-table-column label="角色" prop="roleLabel" width="140"></el-table-column>
             <el-table-column label="邮箱" prop="email" width="180"></el-table-column>
             <el-table-column label="状态" width="90">
                 <template #default="scope">
@@ -77,11 +78,11 @@
                 <el-form-item label="所属部门" prop="dept_id" >
                     <el-cascader placeholder="所属部门" :options="departmentList" v-model="form.data.dept_id"></el-cascader>
                 </el-form-item>
-                <!-- <el-form-item label="身份" prop="role_id" >
-                    <el-checkbox-group v-model="form.data.role_id">
-                        <el-checkbox v-for="role in roleSelectList"  :key="role.createTime" :label="role.roleId">{{role.roleName}}</el-checkbox>
-                    </el-checkbox-group>
-                </el-form-item> -->
+                <el-form-item label="身份" prop="role_id" >
+                    <el-radio-group v-model="form.data.role_id" class="role-list" >
+                        <el-radio v-for="role in roleSelectList" :label="role.id">{{role.name}}</el-radio>
+                    </el-radio-group>
+                </el-form-item>
                 <el-form-item label="状态">
                     <el-radio-group v-model="form.data.status" >
                         <el-radio :label="1">正常</el-radio>
@@ -103,11 +104,12 @@ import { defineComponent, onMounted, reactive, ref, SetupContext, computed } fro
 import { useRoute } from "vue-router";
 import { useStore } from "../../store/index";
 import { usePage,TableConfig } from '../../composables/usePage';
-import { getAdminList, createAdmin, updateAdmin, deleteAdmin, Admin ,getDeptList  } from '../../api/index'
+import { getAdminList, createAdmin, updateAdmin, deleteAdmin, Admin ,getDeptList, getRoleList  } from '../../api/index'
 import { isNotEmpt,isPhoneNumber } from '../../plugins/validate'
 
 import {ElMessage} from 'element-plus'
 import HTable,{TableData} from "../../components/HTable.vue";
+import { treeToCascaderValue } from '../../plugins/utils'
 
 
 export default defineComponent({
@@ -132,11 +134,20 @@ export default defineComponent({
                     page:1,
                     limit:8888
                 })
-                // 给每个用户设置部门名称
+                store.commit('setDepartmentList',depts.rows)
+
+                // 获取角色
+                const roles = await getRoleList({
+                    page:1,
+                    limit:8888
+                })
+                store.commit('setRoleSelectList',roles.rows)
+
+                // 给每个用户设置部门名称和角色名称
                 rows.forEach(user=>{
                     user.deptLabel = depts.rows.find(dept=>dept.id===Number(user.dept_id))?.name
+                    user.roleLabel = roles.rows.find(role=>role.id===Number(user.role_id))?.name
                 })
-                store.commit('setDepartmentList',depts.rows)
 
                 tableData.rows = rows
                 tableData.count = count
@@ -193,25 +204,6 @@ export default defineComponent({
                 ]
             }
         })
-        const parseDepartmentData = (list:any, start = []):any[] | null => {
-            for (const item of list) {
-                // 与当前的部门id相同 返回级联部门结构
-                if (item.value === Number(form.data.dept_id)) {
-                    return start.concat(item.value)
-                } else {
-                    // 与当前部门id不同 查询其子级
-                    if (item.children && item.children.length) {
-                        const depts = parseDepartmentData(item.children, start.concat(item.value))
-                        // 子级查询到匹配部门id则直接返回
-                        if (depts) {
-                            return depts
-                        }
-                    }
-                }
-            }
-            // 否则返回空
-            return null
-        }
         const createSubmit = async ()=>{
             const validateSuccess = await (formEl.value as any).validate()
             if(validateSuccess){
@@ -260,13 +252,12 @@ export default defineComponent({
             creating.value = true
             editingForm.value = true
             form.data = JSON.parse(JSON.stringify(formData))
-            form.data.dept_id = parseDepartmentData(store.state.depts.departmentList)
         }
         const showEditForm = (admin:Admin.Item)=>{
             creating.value = false
             editingForm.value = true
             form.data = JSON.parse(JSON.stringify(admin))
-            form.data.dept_id = parseDepartmentData(store.state.depts.departmentList)
+            form.data.dept_id = treeToCascaderValue(store.state.depts.departmentList,admin.dept_id)
         }
 
 
@@ -277,6 +268,7 @@ export default defineComponent({
 
         return {
             departmentList:computed(()=>store.state.depts.departmentList),
+            roleSelectList:computed(()=>store.state.role.roleSelectList),
             tableData,
             tableConfig,
             updateTable,
@@ -295,3 +287,14 @@ export default defineComponent({
     }
 });
 </script>
+
+<style lang="scss" >
+.page.admin{
+    .role-list{
+        .el-radio{
+            margin-top: 10px;
+            margin-bottom:10px;
+        }
+    }
+}
+</style>

@@ -2,30 +2,25 @@
  * @Author liangjun
  * @LastEditors liangjun
  * @Date 2021-03-03 14:42:08
- * @LastEditTime 2021-03-05 17:14:09
- * @Description 管理员相关接口
+ * @LastEditTime 2021-03-05 10:40:37
+ * @Description 菜单相关接口
  */
 
 import httpClient from '../http'
 
 
-export namespace Admin {
+export namespace Menu {
     export interface ListParams {
         page:number,
-        limit:number,
-        name?:string | number
+        limit:number
     }
     export interface Item {
         id:number
         name:string
-        password:string
-        head_pic:string
-        role_id:string
-        dept_id:string
-        phone_number:number,
-        email:string,
-        deptLabel?:string,
-        roleLabel?:string
+        level:number
+        authorize_key:string
+        parent_id:number | null
+        static:number | null
     }
     export interface List {
         count:number,
@@ -33,10 +28,10 @@ export namespace Admin {
     }
 }
 
-const modelPath = '/admins'
+const modelPath = '/menus'
 
 // 获取列表
-export async function getAdminList (params:Admin.ListParams):Promise<Admin.List> {
+export async function getMenuList (params:Menu.ListParams):Promise<Menu.List> {
     const {status,request,data} = await httpClient.get(`${modelPath}/list`,{
         params:params
     })
@@ -52,7 +47,7 @@ export async function getAdminList (params:Admin.ListParams):Promise<Admin.List>
 }
 
 // 创建
-export async function createAdmin (params:Admin.Item):Promise<void> {
+export async function createMenu (params:Menu.Item):Promise<void> {
     const {status,request,data} = await httpClient.post(`${modelPath}/create`,params)
     if(status!==200){
         throw new Error(request.statusText)
@@ -66,7 +61,7 @@ export async function createAdmin (params:Admin.Item):Promise<void> {
 }
 
 // 更新
-export async function updateAdmin (params:Admin.Item):Promise<void> {
+export async function updateMenu (params:Menu.Item):Promise<void> {
     const {status,request,data} = await httpClient.post(`${modelPath}/update`,params)
     if(status!==200){
         throw new Error(request.statusText)
@@ -80,7 +75,7 @@ export async function updateAdmin (params:Admin.Item):Promise<void> {
 }
 
 // 删除
-export async function deleteAdmin (id:number):Promise<void> {
+export async function deleteMenu (id:number):Promise<void> {
     const {status,request,data} = await httpClient.post(`${modelPath}/delete`,{
         id
     })
