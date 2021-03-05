@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vuedx-typecheck . && vite build",
+    "build:prod":"vuedx-typecheck . && vite build --mode production --base=/hawk-admin/",
     "serve": "vite preview"
   },
   "dependencies": {

@@ -1,5 +1,7 @@
-import { Router, createRouter, createWebHistory } from 'vue-router'
+import { Router, createRouter, createWebHistory,createWebHashHistory } from 'vue-router'
 import store, { AllState } from '../store/index'
+
+import config from '../config'
 
 // pages
 import Home from '../views/Home.vue'
@@ -9,7 +11,7 @@ import Login from '../views/Login.vue'
 import { systemRoutes } from './childrens/system'
 
 const router: Router = createRouter({
-    history: createWebHistory(),
+    history: config.routeMode==='history'?createWebHistory():createWebHashHistory(),
     routes: [
         {
             path: '/',
