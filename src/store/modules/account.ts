@@ -37,6 +37,7 @@ export const account: Module<AccountState, State> = {
         updateLocalUserState(state, loginStateInfo: LoginStateInfo) {
             const { token, userInfo } = loginStateInfo
             state.token = token
+            state.userInfo = userInfo
             const loginToken = {
                 token,
                 userInfo: userInfo
