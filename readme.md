@@ -10,7 +10,7 @@
  
 [element-plus](https://element-plus.gitee.io/#/zh-CN/component/installation)
  
-[vite](https://vitejs.dev/config/#config-file)
+[vite](https://cn.vitejs.dev/guide/)
 
 ### 借鉴以下后台管理系统
 
