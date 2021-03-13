@@ -15,6 +15,8 @@ jobs:
       # 安装对应环境
       - name : env
         uses : actions/setup-node@v2
+        with:
+          node-version: '14'
 
       #安装依赖
       - name : Install Dependencies
