@@ -5,7 +5,7 @@ on:
       - main
 jobs:
   build:
-    runs-on : ubuntu-18.04
+    runs-on : ubuntu-latest
     name: build&deploy
     steps:
       # 复制当前文件夹文件
@@ -14,9 +14,7 @@ jobs:
 
       # 安装对应环境
       - name : env
-        uses : actions/setup-node@v2
-        with:
-          node-version: '14'
+        uses : actions/setup-node@v1
 
       #安装依赖
       - name : Install Dependencies
