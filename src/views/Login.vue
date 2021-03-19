@@ -1,48 +1,44 @@
 <template>
-    <div class="page login" :style="{backgroundImage:`url(${$config.publicPath}images/wallhaven-295371.jpg)`}" >
-        <div class="blur-box" >
-            <div class="blur-bg" :style="{backgroundImage:`url(${$config.publicPath}images/wallhaven-295371.jpg)`}" ></div>
-            <el-card class="login-form" :shadow="'always'" :padding="24" >
-                <img class="logo" src="/images/logo.png" alt="">
-                <el-form ref="form" :model="form" :rules="ruleValidate" label-position="top" label-width="80px" >
-                    <el-form-item prop="username" label="账号" >
-                        <el-input
-                            type="text"
-                            @keyup.native.enter="submit"
-                            :autofocus="true"
-                            size="medium"
-                            v-model="form.username"
-                            placeholder="请输入账号"
-                        >
-                            <i class="el-icon-user-solid" slot="prepend" ></i>
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item prop="password" label="密码" >
-                        <el-input
-                            type="password"
-                            size="medium"
-                            @keyup.native.enter="submit"
-                            v-model="form.password"
-                            placeholder="请输入密码"
-                        >
-                            <i class="el-icon-lock" slot="prepend" ></i>
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item prop="validateCode" label="验证码" class="validate-field" >
-                        <el-input
-                            type="text"
-                            size="medium"
-                            @keyup.native.enter="submit"
-                            v-model="form.validateCode"
-                            placeholder="请输入验证码"
-                        ></el-input>
-                        <div class="svg" @click="initValidateCode" v-html="validateSVG" ></div>
-                    </el-form-item>
-                    <el-button type="primary" class="login-btn" long size="large" @click="submit" :loading="onLogin" >{{onLogin?'登录中...':'登录'}}</el-button>
-                </el-form>
-            </el-card>
-        </div>
-       
+    <div class="page login" :style="{backgroundImage:`url(${$config.publicPath}images/bg-login.svg)`}" >
+        <el-card class="login-form" :shadow="'always'" :padding="24" >
+            <img class="logo" src="/images/logo.png" alt="">
+            <el-form ref="form" :model="form" :rules="ruleValidate" label-position="top" label-width="80px" >
+                <el-form-item prop="username" label="账号" >
+                    <el-input
+                        type="text"
+                        @keyup.native.enter="submit"
+                        :autofocus="true"
+                        size="medium"
+                        v-model="form.username"
+                        placeholder="请输入账号"
+                    >
+                        <i class="el-icon-user-solid" slot="prepend" ></i>
+                    </el-input>
+                </el-form-item>
+                <el-form-item prop="password" label="密码" >
+                    <el-input
+                        type="password"
+                        size="medium"
+                        @keyup.native.enter="submit"
+                        v-model="form.password"
+                        placeholder="请输入密码"
+                    >
+                        <i class="el-icon-lock" slot="prepend" ></i>
+                    </el-input>
+                </el-form-item>
+                <el-form-item prop="validateCode" label="验证码" class="validate-field" >
+                    <el-input
+                        type="text"
+                        size="medium"
+                        @keyup.native.enter="submit"
+                        v-model="form.validateCode"
+                        placeholder="请输入验证码"
+                    ></el-input>
+                    <div class="svg" @click="initValidateCode" v-html="validateSVG" ></div>
+                </el-form-item>
+                <el-button type="primary" class="login-btn" long size="large" @click="submit" :loading="onLogin" >{{onLogin?'登录中...':'登录'}}</el-button>
+            </el-form>
+        </el-card>
     </div>
 </template>
 
@@ -157,34 +153,17 @@ export default defineComponent ({
 <style lang="scss">
 .page.login {
     height: 100vh;
-}
-.blur-box{
-    width:50%;
-    min-width:360px;
-    height:100%;
-    overflow: hidden;
-    float:right;
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    .blur-bg{
-        display: block;
-        width:100%;
-        height:100%;
-        position: absolute;
-        z-index: 0;
-        top:0;
-        left:0;
-        transform: scale(1.1);
-        transform-origin: 50% 50%;
-        filter:blur(30px);
-        background-size: cover;
-        background-attachment: fixed;
-    }
+    background-repeat: no-repeat;
+    background-size:auto 80%;
+    background-position: 30% center;
+    background-color: #68e1fd;
     .login-form{
         width:340px;
-        position: relative;
+        height:430px;
+        position: absolute;
+        left:50%;
+        @extend %ab-center;
         z-index: 1;
         .el-form-item__label{
             padding-bottom:0!important;
@@ -206,6 +185,14 @@ export default defineComponent ({
         .svg{
             width:120px;
             margin-left:10px;
+        }
+    }
+
+    @media all and (max-width:900px)  {
+        background-size:80% auto;
+        background-position: 10% 10%;
+        .login-form{
+            left:0;
         }
     }
 }
