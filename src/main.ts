@@ -15,17 +15,22 @@ import router from './routes/index'
 // store
 import store,{key} from './store/index'
 
+// permissions
+import permissions from './directives/permissions'
+
 // 配置
 import config from './config'
 
 // 初始化store;
 store.commit('initLocalUserState')
+store.dispatch('initUserAuthState')
 
 const app = createApp(App)
 
 app.use(router)
 app.use(store,key)
 app.use(ElementPlus,{ size: 'small', zIndex: 1000 , locale })
+app.use(permissions)
 
 app.config.globalProperties.$config = config
 

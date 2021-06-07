@@ -112,6 +112,7 @@ export default defineComponent ({
                         token:token,
                         userInfo:userInfo
                     });
+                    this.store.dispatch('initUserAuthState')
                     ElMessage.success('登录成功！');
                 }catch(err){
                     console.log(err);

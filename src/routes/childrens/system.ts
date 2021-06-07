@@ -14,28 +14,32 @@ export const systemRoutes = [
         path:'/system/admin',
         component:admin,
         meta:{
-            title:'管理员管理'
+            title:'管理员管理',
+            authCode:'system:admin'
         }
     },
     {
         path:'/system/menu',
         component:menu,
         meta:{
-            title:'菜单管理'
+            title:'菜单管理',
+            authCode:'system:menu'
         }
     },
     {
         path:'/system/role',
         component:role,
         meta:{
-            title:'角色管理'
+            title:'角色管理',
+            authCode:'system:role'
         }
     },
     {
         path:'/system/department',
         component:department,
         meta:{
-            title:'部门管理'
+            title:'部门管理',
+            authCode:'system:dept'
         }
     }
 ]

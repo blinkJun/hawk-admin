@@ -1,11 +1,13 @@
 import { Router, createRouter, createWebHistory,createWebHashHistory } from 'vue-router'
-import store, { AllState } from '../store/index'
-
+import store,{AllState} from '../store/index'
+import {validateAuthCodeAsync} from '../directives/permissions'
 import config from '../config'
+import {ElMessage} from 'element-plus'
 
 // pages
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
+import NoAuth from '../views/No-Auth.vue'
 
 // menus
 import { systemRoutes } from './childrens/system'
@@ -20,14 +22,24 @@ const router: Router = createRouter({
                 ...systemRoutes
             ],
             meta: {
-                title: '主页'
+                title: '主页',
+                authCode:'system'
             }
         },
         {
             path: '/login',
             component: Login,
             meta: {
-                title: '登录'
+                title: '登录',
+                authCode:'system'
+            }
+        },
+        {
+            path: '/no-auth',
+            component: NoAuth,
+            meta: {
+                title: '暂无权限',
+                authCode:'system'
             }
         }
     ]
@@ -58,6 +70,33 @@ router.beforeEach(async (route, from, next) => {
             replace: true
         })
         return false
+    }
+
+    // 检查非登录页面权限
+    if (!isLoginPage && isLogin) {
+        try {
+            // 查询此路由权限
+            const authCode = route.meta.authCode as string
+            const validateAuthCodeResult = await validateAuthCodeAsync(authCode)
+            if (!authCode || !validateAuthCodeResult) {
+                ElMessage.error('暂无权限')
+                const isNoAuth = route.path === '/no-auth'
+                if (isNoAuth) {
+                    next(false)
+                } else {
+                    next({
+                        path: '/no-auth',
+                        query: {
+                            redirect_url: route.fullPath
+                        },
+                        replace: true
+                    })
+                }
+                return false
+            }
+        } catch (err) {
+            console.log('获取路由权限失败:'+err.message)
+        }
     }
 
     next()

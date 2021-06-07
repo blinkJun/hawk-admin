@@ -1,5 +1,6 @@
 import { Module } from 'vuex'
 import { State } from '../index'
+import {getAccountRoleDetail} from '../../api/index'
 import httpClient from '../../api/http'
 
 interface TokenStoreConfig {
@@ -11,7 +12,8 @@ export interface AccountState {
     isLogin: boolean,
     loginConfig: TokenStoreConfig,
     userInfo: any,
-    token: string | null
+    token: string | null,
+    userAuthList:string[]
 }
 
 
@@ -28,7 +30,8 @@ export const account: Module<AccountState, State> = {
         loginConfig: {
             tokenKey: 'hawk-admin-token',
             userInfoKey: 'hawk-admin-token-user'
-        }
+        },
+        userAuthList:[]
     }),
     mutations: {
         setLoginState(state, status: boolean) {
@@ -68,5 +71,20 @@ export const account: Module<AccountState, State> = {
             localStorage.removeItem(state.loginConfig.tokenKey)
             delete httpClient.defaults.headers['Authorization']
         },
+        setUserAuthList(state,authList){
+            state.userAuthList = authList
+        }
+    },
+    actions:{
+        async initUserAuthState(context,payload){
+            if(context.state.isLogin){
+                try{
+                    const authList = await getAccountRoleDetail()
+                    context.commit('setUserAuthList',authList)
+                }catch(err){
+                    context.commit('setUserAuthList',[])
+                }
+            }
+        }
     }
 }

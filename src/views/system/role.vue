@@ -4,6 +4,7 @@
             <div>
                 <el-button
                     type="primary"
+                    v-auth="'system:role:create'"
                     @click.native="showCreateForm"
                 >新增</el-button>
                 <el-button
@@ -30,13 +31,21 @@
                 width="150"
             >
                 <template #default="scope">
-                    <el-button size="mini" @click="showEditForm(scope.row)">编辑</el-button>
+                    <el-button 
+                        size="mini" 
+                        v-auth="'system:role:update'"
+                        @click="showEditForm(scope.row)"
+                    >编辑</el-button>
                     <el-popconfirm
                         title="确定删除吗？"
                         @confirm="deleteSubmit(scope.row.id)"
                     >
                         <template #reference>
-                            <el-button size="mini" type="danger" >删除</el-button>
+                            <el-button 
+                                size="mini" 
+                                type="danger"
+                                v-auth="'system:role:del'" 
+                            >删除</el-button>
                         </template>
                     </el-popconfirm>
                 </template>
