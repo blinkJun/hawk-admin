@@ -23,7 +23,6 @@ import config from './config'
 
 // 初始化store;
 store.commit('initLocalUserState')
-store.dispatch('initUserAuthState')
 
 const app = createApp(App)
 
