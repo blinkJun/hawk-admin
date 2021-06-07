@@ -77,7 +77,7 @@ export default defineComponent({
                 store.commit("setCollapseState", collapse),
             fullScreen: () => {
                 onFullScreen.value = true;
-                document.body.requestFullscreen();
+                document.documentElement.requestFullscreen();
             },
             exitFullScreen: () => {
                 onFullScreen.value = false;
