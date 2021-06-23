@@ -8,6 +8,7 @@ import {ElMessage} from 'element-plus'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import NoAuth from '../views/No-Auth.vue'
+import NotFound from '../views/Not-Found.vue'
 
 // menus
 import { systemRoutes } from './childrens/system'
@@ -39,6 +40,14 @@ const router: Router = createRouter({
             component: NoAuth,
             meta: {
                 title: '暂无权限',
+                authCode:'system'
+            }
+        },
+        {
+            path: '/:pathMatch(.*)*',
+            component: NotFound,
+            meta: {
+                title: '404',
                 authCode:'system'
             }
         }

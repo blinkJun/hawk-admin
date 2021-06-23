@@ -10,7 +10,7 @@
 import {getCurrentInstance} from 'vue'
 import {useStore} from '../store/index'
 export default {
-    name: '',
+    name: 'No-Auth',
     data () {
         return {
 
