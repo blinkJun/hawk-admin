@@ -175,7 +175,7 @@ export default defineComponent({
         const formData = {
             name: '',
             password: 'admin',
-            phone_number: 18520879578,
+            phone_number: 18520879566,
             email: '530080147@qq.com',
             dept_id: [4],
             role_id: 1,

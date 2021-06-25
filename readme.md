@@ -21,3 +21,6 @@
 ### demo
 
 [hawk-admin](http://120.24.43.205/hawk-admin)
+
+账户：blink 
+密码：admin
