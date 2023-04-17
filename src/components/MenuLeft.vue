@@ -13,12 +13,12 @@
             :default-active="focusSideMenuPath"
             :default-openeds="focusSideOpenMenuList"
         >
-            <el-submenu
+            <el-sub-menu
                 v-for="menu in menus"
                 :index="menu.path"
             >
                 <template #title>
-                    <i :class="[menu.icon]"></i>
+                    <el-icon><component :is="menu.icon" /></el-icon>
                     <span>{{menu.name}}</span>
                 </template>
                 <el-menu-item 
@@ -27,7 +27,7 @@
                 >
                     <span>{{subMenu.meta.title}}</span>
                 </el-menu-item>
-            </el-submenu>
+            </el-sub-menu>
         </el-menu>
     </div>
 </template>

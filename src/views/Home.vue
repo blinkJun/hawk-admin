@@ -20,7 +20,7 @@ import {useStore} from '../store/index'
 
 export default defineComponent({
     components: { MenuLeft,MenuTop },
-    name: "Home",
+    name: "App-Home",
     setup(){
         const store  = useStore()
         return {

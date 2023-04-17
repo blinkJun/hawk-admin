@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -7,12 +8,14 @@ export default defineConfig({
     css: {
         preprocessorOptions: {
             scss: {
-                additionalData: `@import "src/style/_extend.scss";`
+                additionalData: `@use "src/style/_extend.scss" as *;`
             }
         }
     },
+    
     resolve:{
-        // 解析包失败时尝试读取包package.json的字段
-        mainFields:['main']
+        alias: {
+            '@': fileURLToPath(new URL('./src', import.meta.url))
+        }
     }
 })

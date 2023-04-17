@@ -57,7 +57,7 @@
             >
                 <template #default="scope">
                     <el-button 
-                        size="mini" 
+                        size="small" 
                         v-auth="'system:menus:update'"
                         @click="showEditForm(scope.row)"
                     >编辑</el-button>
@@ -67,7 +67,7 @@
                     >
                         <template #reference>
                             <el-button 
-                                size="mini" 
+                                size="small" 
                                 type="danger" 
                                 v-auth="'system:menus:del'"
                             >删除</el-button>

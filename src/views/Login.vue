@@ -8,28 +8,32 @@
                         type="text"
                         @keyup.native.enter="submit"
                         :autofocus="true"
-                        size="medium"
+                        size="default"
                         v-model="form.username"
                         placeholder="请输入账号"
                     >
-                        <i class="el-icon-user-solid" slot="prepend" ></i>
+                        <template #prefix >
+                            <el-icon class="el-input__icon" ><User /></el-icon>
+                        </template>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password" label="密码" >
                     <el-input
                         type="password"
-                        size="medium"
+                        size="default"
                         @keyup.native.enter="submit"
                         v-model="form.password"
                         placeholder="请输入密码"
                     >
-                        <i class="el-icon-lock" slot="prepend" ></i>
+                        <template #prefix >
+                            <el-icon class="el-input__icon" ><Lock /></el-icon>
+                        </template>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="validateCode" label="验证码" class="validate-field" >
                     <el-input
                         type="text"
-                        size="medium"
+                        size="default"
                         @keyup.native.enter="submit"
                         v-model="form.validateCode"
                         placeholder="请输入验证码"
@@ -43,7 +47,7 @@
 </template>
 
 <script lang="ts" >
-import { ElFormContext } from 'element-plus/lib/el-form'
+import type { FormInstance, FormRules } from 'element-plus'
 import {defineComponent,getCurrentInstance,ref} from 'vue'
 import {useStore} from '../store/index'
 import { ElMessage } from 'element-plus';
@@ -95,10 +99,7 @@ export default defineComponent ({
     },
     methods: {
         async submit () {
-            interface ElFormCTX extends ElFormContext {
-                validate:()=>Promise<boolean>
-            }
-            const valid = await (this.$refs.form as ElFormCTX).validate()
+            const valid = await (this.$refs.form as FormInstance).validate()
             if (valid) {
                 this.onLogin = true
                 try{
@@ -182,6 +183,9 @@ export default defineComponent ({
     .validate-field{
         .el-form-item__content{
             display: flex;
+        }
+        .el-input{
+            flex:1;
         }
         .svg{
             width:120px;

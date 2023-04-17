@@ -5,7 +5,7 @@ const department = () => import('../../views/system/department.vue');
 
 export const systemRouteConfig = {
     name:'系统管理',
-    icon:'el-icon-setting',
+    icon:'Tools',
     path:'/system'
 }
 

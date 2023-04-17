@@ -6,8 +6,9 @@ import App from './App.vue'
 // ui
 import ElementPlus from 'element-plus';
 import locale from 'element-plus/lib/locale/lang/zh-cn'
-import './style/element-variables.scss';
 import './style/app.scss';
+import "element-plus/theme-chalk/src/index.scss";
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 // router
 import router from './routes/index'
@@ -28,8 +29,11 @@ const app = createApp(App)
 
 app.use(router)
 app.use(store,key)
-app.use(ElementPlus,{ size: 'small', zIndex: 1000 , locale })
+app.use(ElementPlus,{ size: 'default', zIndex: 1000 , locale })
 app.use(permissions)
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(key, component)
+}
 
 app.config.globalProperties.$config = config
 

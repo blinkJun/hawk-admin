@@ -2,19 +2,19 @@
     <el-header class="top-bar" :class="{ collapse: collapse }">
         <div class="menu">
             <div class="nav">
-                <i
+                <el-icon
                     class="el-icon-s-unfold"
                     v-if="collapse"
                     key="unfold"
                     @click="handleCollapse(false)"
-                ></i>
-                <i
+                ><Expand /></el-icon>
+                <el-icon
                     class="el-icon-s-fold"
                     v-else
                     key="fold"
                     @click="handleCollapse(true)"
-                ></i>
-                <i class="el-icon-refresh" @click="reloadPage" ></i>
+                ><Fold /></el-icon>
+                <el-icon class="el-icon-refresh" @click="reloadPage" ><Refresh /></el-icon>
                 <breadcrumb class="breadcrumb" />
             </div>
             <div class="options">
@@ -41,11 +41,11 @@
                         <template #dropdown>
                             <el-dropdown-menu class="user-setting-list" >
                                 <el-dropdown-item command="/user/user">
-                                    <i class="el-icon-user"></i>
+                                    <el-icon><User /></el-icon>
                                     <span class="menu-txt">个人中心</span>
                                 </el-dropdown-item>
                                 <el-dropdown-item command="loginOut">
-                                    <i class="el-icon-switch-button"></i>
+                                    <el-icon><SwitchButton /></el-icon>
                                     <span class="menu-txt">退出登录</span>
                                 </el-dropdown-item>
                             </el-dropdown-menu>
