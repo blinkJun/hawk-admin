@@ -15,7 +15,7 @@ export namespace Depts {
         limit:number
     }
     export interface Item {
-        id:number
+        id?:number | null
         name:string
         parent_id:string
     }

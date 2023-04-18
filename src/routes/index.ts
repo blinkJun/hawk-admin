@@ -1,8 +1,9 @@
-import { Router, createRouter, createWebHistory,createWebHashHistory } from 'vue-router'
-import store,{AllState} from '../store/index'
-import {validateAuthCodeAsync} from '../directives/permissions'
+import { Router, createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
+import { useAccountStore } from '../store/account'
+import { useMenuStore } from '../store/menu'
+import { validateAuthCodeAsync } from '../directives/permissions'
 import config from '../config'
-import {ElMessage} from 'element-plus'
+import { ElMessage } from 'element-plus'
 
 // pages
 import Home from '../views/Home.vue'
@@ -14,7 +15,7 @@ import NotFound from '../views/Not-Found.vue'
 import { systemRoutes } from './childrens/system'
 
 const router: Router = createRouter({
-    history: config.routeMode==='history'?createWebHistory():createWebHashHistory(),
+    history: config.routeMode === 'history' ? createWebHistory() : createWebHashHistory(),
     routes: [
         {
             path: '/',
@@ -24,7 +25,7 @@ const router: Router = createRouter({
             ],
             meta: {
                 title: '主页',
-                authCode:'system'
+                authCode: 'system'
             }
         },
         {
@@ -32,7 +33,7 @@ const router: Router = createRouter({
             component: Login,
             meta: {
                 title: '登录',
-                authCode:'system'
+                authCode: 'system'
             }
         },
         {
@@ -40,7 +41,7 @@ const router: Router = createRouter({
             component: NoAuth,
             meta: {
                 title: '暂无权限',
-                authCode:'system'
+                authCode: 'system'
             }
         },
         {
@@ -48,7 +49,7 @@ const router: Router = createRouter({
             component: NotFound,
             meta: {
                 title: '404',
-                authCode:'system'
+                authCode: 'system'
             }
         }
     ]
@@ -56,9 +57,9 @@ const router: Router = createRouter({
 
 
 router.beforeEach(async (route, from, next) => {
-    const state = store.state as AllState
+    const accountStore = useAccountStore()
     const isLoginPage = route.path === '/login'
-    const isLogin = state.account.isLogin
+    const isLogin = accountStore.isLogin
 
     // 无登录信息时跳转到登录页
     if (!isLoginPage && !isLogin) {
@@ -104,7 +105,7 @@ router.beforeEach(async (route, from, next) => {
                 return false
             }
         } catch (err) {
-            console.log('获取路由权限失败:'+err.message)
+            console.log('获取路由权限失败:' + err.message)
         }
     }
 
@@ -112,11 +113,13 @@ router.beforeEach(async (route, from, next) => {
 
     requestAnimationFrame(() => {
         // 自动聚焦当前菜单
-        store.commit('changeFocusMenu', route)
+        const menuStore = useMenuStore()
+        menuStore.changeFocusMenu(route)
     })
     requestAnimationFrame(() => {
         // 保存导航
-        store.commit('saveRouteHistory', route)
+        const menuStore = useMenuStore()
+        menuStore.saveRouteHistory(route)
     })
 })
 

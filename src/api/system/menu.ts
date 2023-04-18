@@ -15,7 +15,7 @@ export namespace Menu {
         limit:number
     }
     export interface Item {
-        id:number
+        id:number | string | null
         name:string
         level:number
         authorize_key:string

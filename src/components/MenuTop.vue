@@ -7,39 +7,51 @@
                     v-if="collapse"
                     key="unfold"
                     @click="handleCollapse(false)"
-                ><Expand /></el-icon>
+                >
+                    <Expand />
+                </el-icon>
                 <el-icon
                     class="el-icon-s-fold"
                     v-else
                     key="fold"
                     @click="handleCollapse(true)"
-                ><Fold /></el-icon>
-                <el-icon class="el-icon-refresh" @click="reloadPage" ><Refresh /></el-icon>
+                >
+                    <Fold />
+                </el-icon>
+                <el-icon class="el-icon-refresh" @click="reloadPage">
+                    <Refresh />
+                </el-icon>
                 <breadcrumb class="breadcrumb" />
             </div>
             <div class="options">
-                <i
-                    class="el-icon-full-screen"
-                    v-if="!onFullScreen"
-                    @click="fullScreen"
-                ></i>
-                <i
-                    class="el-icon-copy-document"
-                    v-else
-                    @click="exitFullScreen"
-                ></i>
+                <el-icon 
+                v-if="!onFullScreen"
+                class="el-icon-full-screen" @click="fullScreen">
+                    <FullScreen />
+                </el-icon>
+                <el-icon 
+                v-else
+                class="el-icon-copy-document" @click="exitFullScreen">
+                    <CopyDocument />
+                </el-icon>
                 <div class="user">
                     <el-dropdown @command="handleUserSettingCommand">
                         <div class="user-preview">
                             <img
                                 class="cover"
-                                :src="userInfo?userInfo.head_pic:'/images/logo.png'"
+                                :src="
+                                    userInfo
+                                        ? userInfo.head_pic
+                                        : '/images/logo.png'
+                                "
                                 style="float: left"
                             />
-                            <span class="name">{{userInfo?userInfo.name:'匿名'}}</span>
+                            <span class="name">{{
+                                userInfo ? userInfo.name : "匿名"
+                            }}</span>
                         </div>
                         <template #dropdown>
-                            <el-dropdown-menu class="user-setting-list" >
+                            <el-dropdown-menu class="user-setting-list">
                                 <el-dropdown-item command="/user/user">
                                     <el-icon><User /></el-icon>
                                     <span class="menu-txt">个人中心</span>
@@ -58,49 +70,43 @@
     </el-header>
 </template>
 
-<script lang="ts" >
-import { defineComponent, ref, computed } from "vue";
-import { useStore } from "../store/index";
+<script lang="ts" setup>
+import { ref, computed } from "vue";
+import { useThemeStore } from "../store/theme";
+import { useAccountStore } from "../store/account";
+import { useRouter } from "vue-router";
 import Breadcrumb from "./Breadcrumb.vue";
 import WorkTab from "./WorkTab.vue";
-export default defineComponent({
-    components: { Breadcrumb, WorkTab },
-    setup() {
-        let onFullScreen = ref(false);
-        const store = useStore();
-        return {
-            store,
-            onFullScreen,
-            userInfo:computed(()=>store.state.account.userInfo),
-            collapse: computed(() => store.state.collapse),
-            handleCollapse: (collapse: boolean) =>
-                store.commit("setCollapseState", collapse),
-            fullScreen: () => {
-                onFullScreen.value = true;
-                document.documentElement.requestFullscreen();
-            },
-            exitFullScreen: () => {
-                onFullScreen.value = false;
-                document.exitFullscreen();
-            }
-            
-        };
-    },
-    methods:{
-        reloadPage:()=>{
-            location.reload()
-        },
-        handleUserSettingCommand(command:string){
-            if(command==='loginOut'){
-                this.store.commit('clearLocalUserState')
-                this.$router.push('/login')
-            }
-        }
+
+const router = useRouter();
+const themeStore = useThemeStore();
+const accountStore = useAccountStore();
+const onFullScreen = ref(false);
+const userInfo = computed(() => accountStore.userInfo);
+const collapse = computed(() => themeStore.collapse);
+const handleCollapse = (collapse: boolean) => {
+    themeStore.setCollapseState(collapse)
+};
+const fullScreen = () => {
+    onFullScreen.value = true;
+    document.documentElement.requestFullscreen();
+};
+const exitFullScreen = () => {
+    onFullScreen.value = false;
+    document.exitFullscreen();
+};
+const reloadPage = () => {
+    location.reload();
+};
+const handleUserSettingCommand = (command: string) => {
+    if (command === "loginOut") {
+        accountStore.clearLocalUserState()
+        router.push("/login");
     }
-});
+};
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 .top-bar {
     position: fixed;
     top: 0;
@@ -108,7 +114,7 @@ export default defineComponent({
     z-index: 99;
     transition: all 0.3s ease-in-out;
     background: transparent !important;
-    padding: 0;
+    padding: 0 !important;
     width: calc(100% - #{$menu-left-open-width});
     &.collapse {
         width: calc(100% - #{$menu-left-shrink-width});
@@ -160,6 +166,7 @@ export default defineComponent({
             .user-preview {
                 height: 60px;
                 line-height: 60px;
+                outline: none;
             }
             .cover {
                 width: 30px;
@@ -177,7 +184,7 @@ export default defineComponent({
         }
     }
 }
-.user-setting-list .el-dropdown-menu__item{
+.user-setting-list .el-dropdown-menu__item {
     padding: 5px 15px;
 }
 </style>

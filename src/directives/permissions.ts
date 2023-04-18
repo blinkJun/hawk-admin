@@ -2,13 +2,11 @@
  * @Author liangjun
  * @LastEditors liangjun
  * @Date 2021-06-07 10:23:22
- * @LastEditTime 2021-06-07 13:50:55
+ * @LastEditTime 2023-04-18 16:49:51
  * @Description 验证权限方法和全局权限指令
  */
 import {VNode} from 'vue'
-import store,{AllState} from '../store/index'
-
-const storeState = store.state as AllState
+import {useAccountStore} from '../store/account'
 
 const safeAuthCode = 'system'
 
@@ -19,12 +17,14 @@ const safeAuthCode = 'system'
  * @return {Boolean}
  */
  export const validateAuthCode = function (authCode:string):boolean {
-    const funcAuth = storeState.account.userAuthList
+    const accountStore = useAccountStore()
+    const funcAuth = accountStore.userAuthList
     return authCode===safeAuthCode||(funcAuth && funcAuth.includes(authCode))
 }
 export const validateAuthCodeAsync = async function (authCode:string,latest?:boolean):Promise<boolean> {
-    if(latest||storeState.account.userAuthList.length===0){
-        await store.dispatch('initUserAuthState')
+    const accountStore = useAccountStore()
+    if(latest||accountStore.userAuthList.length===0){
+        await accountStore.initUserAuthState()
     }
     return validateAuthCode(authCode)
 }

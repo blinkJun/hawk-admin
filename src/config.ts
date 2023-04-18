@@ -3,6 +3,7 @@ const publicPath = import.meta.env.VITE_PUBLIC_PATH as string
 const routeMode = import.meta.env.VITE_ROUTE_MODE as string
 
 export default {
+    systemName:'Hawk Admin',
     // 对应环境的apiHost
     apiHost: envApiHost,
     routeMode,

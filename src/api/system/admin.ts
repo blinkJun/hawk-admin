@@ -2,7 +2,7 @@
  * @Author liangjun
  * @LastEditors liangjun
  * @Date 2021-03-03 14:42:08
- * @LastEditTime 2021-03-05 17:14:09
+ * @LastEditTime 2023-04-18 17:21:57
  * @Description 管理员相关接口
  */
 
@@ -16,12 +16,12 @@ export namespace Admin {
         name?:string | number
     }
     export interface Item {
-        id:number
+        id?:number | string | null
         name:string
         password:string
         head_pic:string
-        role_id:string
-        dept_id:string
+        role_id:string | number
+        dept_id:string | number
         phone_number:number,
         email:string,
         deptLabel?:string,

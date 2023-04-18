@@ -3,5 +3,9 @@
 </template>
 
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterView } from 'vue-router'
+import { useAccountStore } from './store/account';
+// 初始化store;
+const accountStore = useAccountStore()
+accountStore.initLocalUserState()
 </script>

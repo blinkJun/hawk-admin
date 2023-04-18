@@ -5,18 +5,9 @@
     </section>
 </template>
 
-<script lang="ts" >
-import {getCurrentInstance} from 'vue'
-export default {
-    name:'not-found',
-    setup(){
-        const {appContext} = getCurrentInstance()!
-        const config = appContext.config.globalProperties.$config
-        return {
-            publicPath:config.publicPath
-        }
-    },
-}
+<script lang="ts" setup >
+import config from '@/config'
+const publicPath = config.publicPath
 </script>
 
 <style lang="scss" scoped>

@@ -15,7 +15,7 @@ export namespace Role {
         limit:number
     }
     export interface Item {
-        id:number
+        id:number | string | null
         name:string
         auth_list:number
         remark:string

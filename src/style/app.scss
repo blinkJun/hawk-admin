@@ -3,12 +3,10 @@
     'primary': (
       'base': $primary-color,
     ),
-  ),
+  )
 );
 
 @import "./reset";
-@import "./pages/login.scss";
-
 
 body {
     background-color: #efefef;

@@ -1,7 +1,13 @@
 <template>
     <div class="worktab">
-        <transition-group tag="ul" mode="out-in" name="route-tab" class="route-history tabs" ref="tabs" >
-            <li  
+        <transition-group
+            tag="ul"
+            mode="out-in"
+            name="route-tab"
+            class="route-history tabs"
+            ref="tabs"
+        >
+            <li
                 :class="{ 'activ-tab': '/' === activeTab }"
                 :key="'/'"
                 @click="clickWorktab('/')"
@@ -10,37 +16,44 @@
             </li>
             <li
                 v-for="(i, index) in worktabs"
-                :key="i.fullPath"
+                :key="i.path"
                 :ref="i.path"
                 :class="{ 'activ-tab': i.path === activeTab }"
                 @click="clickWorktab(i.path)"
             >
                 {{ i.meta.title }}
-                <i
+                <ElIcon
                     class="el-icon-close"
                     @click.stop="closeWorktabCurrent(i)"
-                ></i>
+                >
+                    <Close></Close>
+                </ElIcon>
             </li>
         </transition-group>
 
         <div class="right">
-            <el-dropdown @command="closeWorktab" >
-                <div class="btn el-icon-arrow-down" />
+            <el-dropdown @command="closeWorktab">
+                <el-icon  class="btn el-icon-arrow-down" >
+                    <ArrowDown></ArrowDown>
+                </el-icon>
                 <template #dropdown>
-                    <el-dropdown-menu class="work-tab-setting" >
-                        <el-dropdown-item icon="el-icon-arrow-left" command="left">
+                    <el-dropdown-menu class="work-tab-setting">
+                        <el-dropdown-item
+                            icon="arrow-left"
+                            command="left"
+                        >
                             <span style="menu-txt">关闭左侧</span>
                         </el-dropdown-item>
                         <el-dropdown-item
-                            icon="el-icon-arrow-right"
+                            icon="arrow-right"
                             command="right"
                         >
                             <span style="menu-txt">关闭右侧</span>
                         </el-dropdown-item>
-                        <el-dropdown-item icon="el-icon-close" command="other">
+                        <el-dropdown-item icon="warning" command="other">
                             <span style="menu-txt">关闭其它</span>
                         </el-dropdown-item>
-                        <el-dropdown-item icon="el-icon-error" command="all">
+                        <el-dropdown-item icon="close" command="all">
                             <span style="menu-txt">关闭全部</span>
                         </el-dropdown-item>
                     </el-dropdown-menu>
@@ -50,54 +63,50 @@
     </div>
 </template>
 
-<script lang="ts" >
-import { computed, defineComponent } from "vue";
-import { useRoute, RouteRecordNormalized } from "vue-router";
-import { useStore } from "../store";
-export default defineComponent({
-    setup() {
-        const route = useRoute()
-        const store = useStore()
-        return {
-            store,
-            activeTab:computed(()=>route.path),
-            worktabs:computed(()=>store.state.menu.routerHistory)
-        };
-    },
-    methods:{
-        closeWorktab(type:string){
-            if(this.activeTab==='/'){
-                if(type==='left'){
-                    return false;
-                }
-                if(type==='right'||type==='other'||type==='all'){
-                    type = 'all'
-                }
-            }
-            this.store.commit('removeRouteHistory',{
-                type,
-                route:this.worktabs.find(route=>route.path===this.activeTab)
-            })
-        },
-        closeWorktabCurrent(route:RouteRecordNormalized){
-            this.store.commit('removeRouteHistory',{
-                type:'current',
-                route:route
-            })
-            if(this.worktabs.length>0){
-                this.$router.push(this.worktabs[this.worktabs.length-1].path)
-            }else{
-                this.$router.push('/')
-            }
-        },
-        clickWorktab(path:string){
-            this.$router.push(path)
+<script lang="ts" setup>
+import { computed } from "vue";
+import { useRoute, useRouter, RouteLocationNormalized } from "vue-router";
+import { useMenuStore } from "../store/menu";
+import { ElIcon } from "element-plus";
+const route = useRoute();
+const router = useRouter();
+const menuStore = useMenuStore();
+const activeTab = computed(() => route.path);
+const worktabs = computed(() => menuStore.routerHistory);
+
+const closeWorktab = (type: string) => {
+    if (activeTab.value === "/") {
+        if (type === "left") {
+            return false;
+        }
+        if (type === "right" || type === "other" || type === "all") {
+            type = "all";
         }
     }
-});
+    menuStore.removeRouteHistory({
+        type,
+        route: worktabs.value.find((route) => route.path === activeTab.value)!
+    })
+};
+
+const closeWorktabCurrent = (route: RouteLocationNormalized) => {
+    menuStore.removeRouteHistory({
+        type: "current",
+        route: route,
+    })
+    if (worktabs.value.length > 0) {
+        router.push(worktabs.value[worktabs.value.length - 1].path);
+    } else {
+        router.push("/");
+    }
+};
+
+const clickWorktab = (path: string) => {
+    router.push(path);
+};
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 .worktab {
     width: 100%;
     display: flex;
@@ -107,12 +116,12 @@ export default defineComponent({
     box-sizing: border-box;
     background: #eee;
     .tabs {
-        flex:1;
-        margin-right:5px;
-        display:flex;
+        flex: 1;
+        margin-right: 5px;
+        display: flex;
         align-items: center;
-        overflow-x:auto ;
-        overflow-y:hidden ;
+        overflow-x: auto;
+        overflow-y: hidden;
         white-space: nowrap;
         background: transparent !important;
         &::-webkit-scrollbar {
@@ -139,22 +148,22 @@ export default defineComponent({
                 margin-left: 5px;
                 border-radius: 50%;
                 &:hover {
-                    background: #eee;
+                    background:#efefef;
                 }
             }
         }
         .activ-tab {
-            color: $primary-color!important;
-            i{
-                color:$primary-color;
+            color: $primary-color !important;
+            i {
+                color: $primary-color;
             }
         }
     }
     .right {
-        .el-dropdown--small{
-            height:30px;
+        .el-dropdown--small {
+            height: 30px;
         }
-        display:flex;
+        display: flex;
         align-items: center;
         .btn {
             font-size: 16px;
@@ -174,8 +183,8 @@ export default defineComponent({
             }
         }
     }
-    .tabs li{
-        transition: all .2s ease;
+    .tabs li {
+        transition: all 0.2s ease;
     }
 
     .route-tab-enter-from,
@@ -183,11 +192,11 @@ export default defineComponent({
         opacity: 0;
         transform: translateX(30px);
     }
-    .route-tab-leave-active{
+    .route-tab-leave-active {
         position: absolute;
     }
 }
-.work-tab-setting .el-dropdown-menu__item{
+.work-tab-setting .el-dropdown-menu__item {
     padding: 3px 15px;
 }
 </style>

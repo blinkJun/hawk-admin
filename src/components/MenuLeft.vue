@@ -1,59 +1,49 @@
 <template>
-    <div class="menu-left" :class="{collapse}" >
+    <div class="menu-left" :class="{ collapse }">
         <router-link tag="div" class="el-menu-header" to="/">
             <img src="/images/logo.png" class="logo" alt="" />
-            <transition name="el-fade-in-linear"  >
+            <transition name="el-fade-in-linear">
                 <p v-show="!collapse">{{ systemName }}</p>
             </transition>
         </router-link>
-        <el-menu 
-            class="menu" 
-            :collapse="collapse" 
+        <el-menu
+            class="menu"
+            :collapse="collapse"
             :router="true"
             :default-active="focusSideMenuPath"
             :default-openeds="focusSideOpenMenuList"
         >
-            <el-sub-menu
-                v-for="menu in menus"
-                :index="menu.path"
-            >
+            <el-sub-menu v-for="menu in menus" :index="menu.path">
                 <template #title>
                     <el-icon><component :is="menu.icon" /></el-icon>
-                    <span>{{menu.name}}</span>
+                    <span>{{ menu.name }}</span>
                 </template>
-                <el-menu-item 
+                <el-menu-item
                     v-for="subMenu in menu.routes"
                     :index="subMenu.path"
                 >
-                    <span>{{subMenu.meta.title}}</span>
+                    <span>{{ subMenu.meta.title }}</span>
                 </el-menu-item>
             </el-sub-menu>
         </el-menu>
     </div>
 </template>
 
-<script lang="ts" >
-import { defineComponent, ref, computed } from "vue";
-import { useStore } from "../store/index";
-export default defineComponent({
-    data() {
-        return {
-            systemName: "Hawk Admin",
-        };
-    },
-    setup() {
-        const store = useStore();
-        return {
-            focusSideMenuPath:computed(() => store.state.menu.focusSideMenuPath),
-            focusSideOpenMenuList:[],
-            collapse: computed(() => store.state.collapse),
-            menus:computed(()=>store.state.menu.leftMenu)
-        };
-    },
-});
+<script lang="ts" setup>
+import { ref, computed } from "vue";
+import { useThemeStore } from "../store/theme";
+import { useMenuStore } from "../store/menu";
+import config from "@/config";
+const systemName = ref(config.systemName);
+const themeStore = useThemeStore();
+const menuStore = useMenuStore()
+const focusSideOpenMenuList = ref([]);
+const focusSideMenuPath = computed(() => menuStore.focusSideMenuPath);
+const collapse = computed(() => themeStore.collapse);
+const menus = computed(() => menuStore.leftMenu);
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 .menu-left {
     height: 100vh;
     user-select: none;
@@ -66,14 +56,14 @@ export default defineComponent({
     background-color: #fff;
     box-shadow: 5px 5px 8px 0 rgba(29, 35, 41, 0.05);
     transition: all 0.3s ease-in-out;
-    width:$menu-left-open-width;
-    overflow-x:hidden;
-    &.collapse{
-        width:$menu-left-shrink-width;
+    width: $menu-left-open-width;
+    overflow-x: hidden;
+    &.collapse {
+        width: $menu-left-shrink-width;
     }
     .el-menu-header {
         background-color: #fff;
-        width:$menu-left-open-width;
+        width: $menu-left-open-width;
         height: 60px;
         line-height: 45px;
         padding-left: 20px;
@@ -135,8 +125,9 @@ export default defineComponent({
         }
         // 左边距
         .el-submenu__title,
-        > .el-menu-item,.el-submenu__title,
-        > .el-menu-item>div {
+        > .el-menu-item,
+        .el-submenu__title,
+        > .el-menu-item > div {
             padding-left: 25px !important;
         }
         // 设置文字与图标的距离

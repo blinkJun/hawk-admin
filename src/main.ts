@@ -14,27 +14,18 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import router from './routes/index'
 
 // store
-import store,{key} from './store/index'
+import { createPinia } from 'pinia'
 
 // permissions
 import permissions from './directives/permissions'
 
-// 配置
-import config from './config'
-
-// 初始化store;
-store.commit('initLocalUserState')
-
 const app = createApp(App)
-
+app.use(createPinia())
 app.use(router)
-app.use(store,key)
 app.use(ElementPlus,{ size: 'default', zIndex: 1000 , locale })
 app.use(permissions)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-  app.component(key, component)
+    app.component(key, component)
 }
-
-app.config.globalProperties.$config = config
 
 app.mount('#app')
