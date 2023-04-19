@@ -7,7 +7,6 @@ import App from './App.vue'
 import ElementPlus from 'element-plus';
 import locale from 'element-plus/lib/locale/lang/zh-cn'
 import './style/app.scss';
-import "element-plus/theme-chalk/src/index.scss";
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
 // router

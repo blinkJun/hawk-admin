@@ -1,5 +1,5 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
-import { RouteRecordNormalized,RouteLocationNormalized } from 'vue-router'
+import { RouteLocationNormalized } from 'vue-router'
 import { toTree } from '../plugins/utils'
 import { systemRouteConfig, systemRoutes } from '../routes/childrens/system'
 import config from '../config'
@@ -15,7 +15,7 @@ export const useMenuStore = defineStore('menu', {
             leftMenu: [
                 {
                     ...systemRouteConfig,
-                    routes: systemRoutes
+                    routes: systemRoutes.filter(item=>!item.meta?.hide)
                 }
             ],
             focusSideMenuPath: '',

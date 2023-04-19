@@ -42,7 +42,7 @@
                                 :src="
                                     userInfo
                                         ? userInfo.head_pic
-                                        : '/images/logo.png'
+                                        : `${publicPath}images/logo.png`
                                 "
                                 style="float: left"
                             />
@@ -52,7 +52,7 @@
                         </div>
                         <template #dropdown>
                             <el-dropdown-menu class="user-setting-list">
-                                <el-dropdown-item command="/user/user">
+                                <el-dropdown-item command="user">
                                     <el-icon><User /></el-icon>
                                     <span class="menu-txt">个人中心</span>
                                 </el-dropdown-item>
@@ -77,7 +77,9 @@ import { useAccountStore } from "../store/account";
 import { useRouter } from "vue-router";
 import Breadcrumb from "./Breadcrumb.vue";
 import WorkTab from "./WorkTab.vue";
+import config from '@/config'
 
+const publicPath = config.publicPath
 const router = useRouter();
 const themeStore = useThemeStore();
 const accountStore = useAccountStore();
@@ -99,6 +101,9 @@ const reloadPage = () => {
     location.reload();
 };
 const handleUserSettingCommand = (command: string) => {
+    if (command === "user") {
+        router.push("/system/user");
+    }
     if (command === "loginOut") {
         accountStore.clearLocalUserState()
         router.push("/login");

@@ -2,7 +2,7 @@ const admin = () => import('../../views/system/admin.vue');
 const menu = () => import('../../views/system/menu.vue');
 const role = () => import('../../views/system/role.vue');
 const department = () => import('../../views/system/department.vue');
-
+const user = () => import('../../views/system/user.vue');
 export const systemRouteConfig = {
     name:'系统管理',
     icon:'Tools',
@@ -41,5 +41,14 @@ export const systemRoutes = [
             title:'部门管理',
             authCode:'system:dept'
         }
-    }
+    },
+    {
+        path: '/system/user',
+        component: user,
+        meta: {
+            title: '用户主页',
+            authCode: 'system',
+            hide:true
+        }
+    },
 ]

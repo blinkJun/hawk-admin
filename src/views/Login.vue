@@ -6,7 +6,7 @@
         }"
     >
         <el-card class="login-form" :shadow="'always'" :padding="24">
-            <img class="logo" src="/images/logo.png" alt="" />
+            <img class="logo" :src="`${publicPath}images/logo.png`" alt="" />
             <el-form
                 ref="formRef"
                 :model="form"
@@ -178,14 +178,14 @@ onMounted(() => {
     height: 100vh;
     position: relative;
     background-repeat: no-repeat;
-    background-size: auto 80%;
+    background-size: auto 60%;
     background-position: 30% center;
-    background-color: #68e1fd;
+    background-color: rgba($primary-color,0.75);
     .login-form {
         width: 340px;
         height: 430px;
         position: absolute;
-        left: 50%;
+        left: 60%;
         @extend %ab-center;
         z-index: 1;
         .el-form-item__label {

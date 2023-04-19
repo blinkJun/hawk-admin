@@ -39,6 +39,9 @@ const tryRedirect = async () => {
     p {
         margin: 10px 0;
     }
+    .tips-1{
+        margin-top:40px;
+    }
     .tips-2 {
         color: #999;
     }

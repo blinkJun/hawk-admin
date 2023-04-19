@@ -1,7 +1,7 @@
 <template>
     <div class="menu-left" :class="{ collapse }">
         <router-link tag="div" class="el-menu-header" to="/">
-            <img src="/images/logo.png" class="logo" alt="" />
+            <img :src="`${publicPath}images/logo.png`" class="logo" alt="" />
             <transition name="el-fade-in-linear">
                 <p v-show="!collapse">{{ systemName }}</p>
             </transition>
@@ -35,6 +35,7 @@ import { useThemeStore } from "../store/theme";
 import { useMenuStore } from "../store/menu";
 import config from "@/config";
 const systemName = ref(config.systemName);
+const publicPath = ref(config.publicPath);
 const themeStore = useThemeStore();
 const menuStore = useMenuStore()
 const focusSideOpenMenuList = ref([]);

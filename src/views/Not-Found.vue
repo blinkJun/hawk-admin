@@ -21,6 +21,7 @@ const publicPath = config.publicPath
             margin:10px 0;
         }
         .tips{
+            margin-top:40px;
             color:#999
         }
     }

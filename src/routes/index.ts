@@ -104,7 +104,7 @@ router.beforeEach(async (route, from, next) => {
                 }
                 return false
             }
-        } catch (err) {
+        } catch (err:any) {
             console.log('获取路由权限失败:' + err.message)
         }
     }
