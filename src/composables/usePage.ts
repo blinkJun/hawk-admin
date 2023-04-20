@@ -1,4 +1,4 @@
-import { RouteLocationNormalized, onBeforeRouteUpdate, useRouter, Router } from 'vue-router'
+import { RouteLocationNormalized, onBeforeRouteUpdate, Router } from 'vue-router'
 
 export interface PageConfig {
     page?: number,
@@ -51,7 +51,6 @@ export const usePage = (
                 }
             })
         } else {
-            
             refreshPage()
         }
     }
