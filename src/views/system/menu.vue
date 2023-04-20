@@ -124,7 +124,6 @@
 
 <script lang="ts" setup>
 import { onMounted, reactive, ref, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
 import { useMenuStore } from "../../store/menu";
 import { ElMessage, FormInstance } from "element-plus";
 import { usePage, PageConfig } from "../../composables/usePage";

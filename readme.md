@@ -1,26 +1,16 @@
-## 基于typescript，vue3，element plus的后台管理系统
+# `hawk-admin`
 
-[vue3](https://v3.cn.vuejs.org/guide/introduction.html)
+- 基于`typescript`，`vue3`，`element-plus`、`vue-router`、`pinia`的后台管理系统
+- 借鉴以下后台管理系统
+  - [TAO-admin](http://www.lingchen.kim/tao_admin)
+  - [vue3-antd-admin](http://buqiyuan.gitee.io/vue3-antd-admin)
  
-[vue-router](https://next.router.vuejs.org/)
- 
-[vuex](https://next.vuex.vuejs.org/)
- 
-[typescript](https://www.tslang.cn/docs/handbook/basic-types.html)
- 
-[element-plus](https://element-plus.gitee.io/#/zh-CN/component/installation)
- 
-[vite](https://cn.vitejs.dev/guide/)
+> 该前端页面与后台服务[`hawk-admin-server`](https://github.com/blinkJun/hawk-admin-server)关联，预览此项目需要启动`hawk-admin-server`后台服务。
 
-### 借鉴以下后台管理系统
-
-[TAO-admin](http://www.lingchen.kim/tao_admin)
-
-[vue3-antd-admin](http://buqiyuan.gitee.io/vue3-antd-admin)
-
-### demo
-
-[hawk-admin](http://120.24.43.205/hawk-admin)
-
-账户：blink 
-密码：admin
+## 安装和启动
+```bash
+# 安装
+npm i 
+# 启动
+npm run dev
+```

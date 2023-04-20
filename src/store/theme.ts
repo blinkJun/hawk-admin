@@ -1,5 +1,5 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
-
+import {themeKey} from './account'
 export const useThemeStore = defineStore('theme', {
     state: () => {
         return {
@@ -9,7 +9,27 @@ export const useThemeStore = defineStore('theme', {
     actions: {
         setCollapseState(collapse: boolean) {
             this.collapse = collapse
-        }
+            this.updateLocalThemeState({collapse})
+        },
+        updateLocalThemeState(config:object = {}){
+            const localThemeConfig = localStorage.getItem(themeKey)
+            if(localThemeConfig){
+                const themeConfig = JSON.parse(localThemeConfig)
+                config = {
+                    ...themeConfig,
+                    ...config
+                }
+            }
+            localStorage.setItem(themeKey, JSON.stringify(config))
+        },
+        initLocalThemeState() {
+            const localThemeConfig = localStorage.getItem(themeKey)
+
+            if (localThemeConfig) {
+                const themeConfig = JSON.parse(localThemeConfig)
+                this.collapse = themeConfig.collapse
+            }
+        },
     }
 })
 

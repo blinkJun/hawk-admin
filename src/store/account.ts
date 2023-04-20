@@ -1,6 +1,10 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { getAccountRoleDetail } from '../api/index'
 
+export const tokenKey = 'token'
+export const userInfoKey = 'userinfo'
+export const themeKey = 'theme'
+
 export const useAccountStore = defineStore('account', {
     state: () => {
         return {
@@ -8,8 +12,8 @@ export const useAccountStore = defineStore('account', {
             userInfo: null as any,
             token: '',
             loginConfig: {
-                tokenKey: 'hawk-admin-token',
-                userInfoKey: 'hawk-admin-token-user'
+                tokenKey,
+                userInfoKey 
             },
             userAuthList: [] as string[]
         }

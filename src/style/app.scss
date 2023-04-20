@@ -1,3 +1,4 @@
+@use "./reset" as *;
 @forward 'element-plus/theme-chalk/src/common/var.scss' with (
   $colors: (
     'primary': (
@@ -6,7 +7,6 @@
   )
 );
 @use "element-plus/theme-chalk/src/index.scss" as *;
-@import "./reset";
 
 body {
     background-color: #efefef;
