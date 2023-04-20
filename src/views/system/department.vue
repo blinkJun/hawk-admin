@@ -8,7 +8,7 @@
                     @click.native="showCreateForm"
                     >新增</el-button
                 >
-                <el-button type="default" @click.native="updateTable"
+                <el-button type="default" @click.native="refreshPage"
                     >刷新</el-button
                 >
             </div>
@@ -109,9 +109,9 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref, computed } from "vue";
 import { FormInstance } from "element-plus";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useDeptStore } from "../../store/dept";
-import { usePage, TableConfig } from "../../composables/usePage";
+import { usePage, PageConfig } from "../../composables/usePage";
 import {
     Depts,
     getDeptList,
@@ -130,35 +130,31 @@ const tableData: TableData = reactive({
     rows: [],
     count: 0,
 });
-const setTable = async (tableConfig: TableConfig) => {
+const setTable = async (pageConfig: PageConfig) => {
     try {
         const { rows, count } = await getDeptList({
-            page: tableConfig.page!,
-            limit: tableConfig.limit!,
+            page: pageConfig.page!,
+            limit: pageConfig.limit!,
         });
         tableData.baseRows = rows;
         tableData.count = count;
-        deptStore.setDepartmentList(rows)
+        deptStore.setDepartmentList(rows);
     } catch (err: any) {}
 };
-const { updateTable, resetTable } = usePage(
-    useRoute(),
-    setTable,
-    {
-        limit: 8888,
-    }
-);
+const { refreshPage } = usePage(setTable, null, null, {
+    limit: 8888,
+});
 
 // 创建和编辑
 const editingForm = ref(false);
 const creating = ref(true);
 const formRef = ref<FormInstance>();
 const baseFormData = {
-    id:null,
+    id: null,
     name: "",
     parent_id: [],
 };
-const formData = reactive({...baseFormData})
+const formData = reactive({ ...baseFormData });
 const formRule = reactive({
     name: [{ required: true, message: "用户名", trigger: "blur" }],
     parent_id: [
@@ -169,7 +165,7 @@ const formRule = reactive({
             message: "请输入此项",
         },
     ],
-})
+});
 
 const createSubmit = async () => {
     const validateSuccess = await formRef.value?.validate();
@@ -179,7 +175,7 @@ const createSubmit = async () => {
             await createDept({ ...formData, parent_id });
             ElMessage.success("创建成功！");
             editingForm.value = false;
-            updateTable();
+            refreshPage();
         } catch (err: any) {
             ElMessage.error(err.message);
             console.log(err);
@@ -190,15 +186,14 @@ const updateSubmit = async () => {
     const validateSuccess = await (formRef.value as any).validate();
     if (validateSuccess) {
         try {
-            const parent_id =
-                formData.parent_id[formData.parent_id.length - 1];
+            const parent_id = formData.parent_id[formData.parent_id.length - 1];
             if (parent_id === formData.id) {
                 throw new Error("请勿选择当前要修改的部门。");
             }
             await updateDept({ ...formData, parent_id });
             ElMessage.success("更新成功！");
             editingForm.value = false;
-            updateTable();
+            refreshPage();
         } catch (err: any) {
             ElMessage.error(err.message);
             console.log(err);
@@ -210,7 +205,7 @@ const deleteSubmit = async (id: number) => {
         await deleteDept(id);
         ElMessage.success("删除成功！");
         editingForm.value = false;
-        updateTable();
+        refreshPage();
     } catch (err: any) {
         ElMessage.error(err.message);
         console.log(err);
@@ -219,17 +214,17 @@ const deleteSubmit = async (id: number) => {
 const showCreateForm = () => {
     creating.value = true;
     editingForm.value = true;
-    Object.assign(formData,{...baseFormData});
+    Object.assign(formData, { ...baseFormData });
 };
 const showEditForm = (data: Depts.Item) => {
     creating.value = false;
     editingForm.value = true;
-    Object.assign(formData,{...data});
+    Object.assign(formData, { ...data });
 };
 
 // 钩子
 onMounted(() => {
-    resetTable();
+    refreshPage();
 });
 
 const departmentList = computed(() => deptStore.departmentList);

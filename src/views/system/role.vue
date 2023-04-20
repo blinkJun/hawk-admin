@@ -8,7 +8,7 @@
                     @click.native="showCreateForm"
                     >新增</el-button
                 >
-                <el-button type="default" @click.native="updateTable"
+                <el-button type="default" @click.native="refreshPage"
                     >刷新</el-button
                 >
             </div>
@@ -16,11 +16,11 @@
 
         <h-table
             :list="tableData.rows"
-            :limit="tableConfig.limit"
+            :limit="pageConfig.limit"
             :total="tableData.count"
-            :pageSizeOpts="tableConfig.pageSizeOpts"
-            :currentPage="tableConfig.page"
-            @update="toUpdateTable($event)"
+            :pageSizeOpts="pageConfig.pageSizeOpts"
+            :currentPage="pageConfig.page"
+            @update="updatePage($event)"
         >
             <el-table-column label="id" prop="id" width="100"></el-table-column>
             <el-table-column label="名称" prop="name"></el-table-column>
@@ -131,9 +131,9 @@
 
 <script lang="ts" setup>
 import { onMounted, reactive, ref, computed, nextTick } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useMenuStore } from "../../store/menu";
-import { usePage, TableConfig } from "../../composables/usePage";
+import { usePage, PageConfig } from "../../composables/usePage";
 import {
     Role,
     getRoleList,
@@ -156,11 +156,11 @@ const tableData: TableData = reactive({
     rows: [],
     count: 0,
 });
-const setTable = async (tableConfig: TableConfig) => {
+const setTable = async (pageConfig: PageConfig) => {
     try {
         const { rows, count } = await getRoleList({
-            page: tableConfig.page!,
-            limit: tableConfig.limit!,
+            page: pageConfig.page!,
+            limit: pageConfig.limit!,
         });
         // 获取菜单列表
         const menus = await getMenuList({
@@ -176,9 +176,10 @@ const setTable = async (tableConfig: TableConfig) => {
         ElMessage.error(err.message);
     }
 };
-const { tableConfig, updateTable, toUpdateTable, resetTable } = usePage(
+const { pageConfig, refreshPage, updatePage } = usePage(
+    setTable,
     useRoute(),
-    setTable
+    useRouter()
 );
 
 // 创建和编辑
@@ -206,7 +207,7 @@ const createSubmit = async () => {
             await createRole({ ...formData, auth_list });
             ElMessage.success("创建成功！");
             editingForm.value = false;
-            updateTable();
+            refreshPage();
         } catch (err: any) {
             ElMessage.error(err.message);
             console.log(err);
@@ -223,7 +224,7 @@ const updateSubmit = async () => {
             await updateRole({ ...formData, auth_list });
             ElMessage.success("更新成功！");
             editingForm.value = false;
-            updateTable();
+            refreshPage();
         } catch (err: any) {
             ElMessage.error(err.message);
             console.log(err);
@@ -235,7 +236,7 @@ const deleteSubmit = async (id: number) => {
         await deleteRole(id);
         ElMessage.success("删除成功！");
         editingForm.value = false;
-        updateTable();
+        refreshPage();
     } catch (err: any) {
         ElMessage.error(err.message);
         console.log(err);
@@ -260,7 +261,7 @@ const showEditForm = (data: Role.Item) => {
 
 // 钩子
 onMounted(() => {
-    resetTable();
+    refreshPage();
 });
 
 const menusList = computed(() => menuStore.menusList);

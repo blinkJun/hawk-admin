@@ -8,7 +8,7 @@
                     @click.native="showCreateForm"
                     >新增</el-button
                 >
-                <el-button type="default" @click.native="updateTable"
+                <el-button type="default" @click.native="refreshPage"
                     >刷新</el-button
                 >
             </div>
@@ -124,10 +124,10 @@
 
 <script lang="ts" setup>
 import { onMounted, reactive, ref, computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useMenuStore } from "../../store/menu";
 import { ElMessage, FormInstance } from "element-plus";
-import { usePage, TableConfig } from "../../composables/usePage";
+import { usePage, PageConfig } from "../../composables/usePage";
 import {
     Menu,
     getMenuList,
@@ -148,11 +148,11 @@ const tableData: TableData = reactive({
     rows: [],
     count: 0,
 });
-const setTable = async (tableConfig: TableConfig) => {
+const setTable = async (pageConfig: PageConfig) => {
     try {
         const { rows, count } = await getMenuList({
-            page: tableConfig.page!,
-            limit: tableConfig.limit!,
+            page: pageConfig.page!,
+            limit: pageConfig.limit!,
         });
         tableData.baseRows = rows;
         tableData.count = count;
@@ -160,7 +160,7 @@ const setTable = async (tableConfig: TableConfig) => {
         menuStore.setMenusSelect(rows);
     } catch (err: any) {}
 };
-const { updateTable, resetTable } = usePage(useRoute(), setTable, {
+const { refreshPage } = usePage(setTable, null, null, {
     limit: 8888,
 });
 
@@ -199,7 +199,7 @@ const createSubmit = async () => {
             await createMenu({ ...formData, parent_id });
             ElMessage.success("创建成功！");
             editingForm.value = false;
-            updateTable();
+            refreshPage();
         } catch (err: any) {
             ElMessage.error(err.message);
             console.log(err);
@@ -217,7 +217,7 @@ const updateSubmit = async () => {
             await updateMenu({ ...formData, parent_id });
             ElMessage.success("更新成功！");
             editingForm.value = false;
-            updateTable();
+            refreshPage();
         } catch (err: any) {
             ElMessage.error(err.message);
             console.log(err);
@@ -229,7 +229,7 @@ const deleteSubmit = async (id: number) => {
         await deleteMenu(id);
         ElMessage.success("删除成功！");
         editingForm.value = false;
-        updateTable();
+        refreshPage();
     } catch (err: any) {
         ElMessage.error(err.message);
         console.log(err);
@@ -254,7 +254,7 @@ const showEditForm = (data: Menu.Item) => {
 
 // 钩子
 onMounted(() => {
-    resetTable();
+    refreshPage();
 });
 
 const menuLevelList = computed(() => menuStore.levelList);

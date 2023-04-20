@@ -1,11 +1,9 @@
-import {reactive} from 'vue'
-import {RouteLocationNormalized,onBeforeRouteUpdate} from 'vue-router'
-import router from '../routes/index'
+import { RouteLocationNormalized, onBeforeRouteUpdate, useRouter, Router } from 'vue-router'
 
-export interface TableConfig {
-    page?:number,
-    limit?:number,
-    pageSizeOpts?:number[]
+export interface PageConfig {
+    page?: number,
+    limit?: number,
+    pageSizeOpts?: number[]
 }
 const basePageConfig = {
     page: 1,
@@ -14,67 +12,72 @@ const basePageConfig = {
 }
 
 export const usePage = (
-    route:RouteLocationNormalized,
-    setTable:(tableConfig:TableConfig)=>Promise<void>,
-    replacePageConfig:TableConfig = {}
-)=>{
+    updateCallback: (PageConfig: PageConfig) => Promise<void>,
+    route?: RouteLocationNormalized | null,
+    router?: Router | null,
+    replacePageConfig: PageConfig = {},
+) => {
 
-    // 将传入的配置和默认配置合并
-    const pageConfig:TableConfig = {
-        page:replacePageConfig.page || basePageConfig.page,
-        limit:replacePageConfig.limit || basePageConfig.limit,
-        pageSizeOpts:replacePageConfig.pageSizeOpts || basePageConfig.pageSizeOpts
+    // 将传入的配置和默认配置合并，得到基本配置
+    const pageConfig: PageConfig = {
+        page: replacePageConfig.page || basePageConfig.page,
+        limit: replacePageConfig.limit || basePageConfig.limit,
+        pageSizeOpts: replacePageConfig.pageSizeOpts || basePageConfig.pageSizeOpts
     }
 
-    // 将默认配置和路由的配置合并
-    const tableConfig:TableConfig = reactive({
-        page: Number(route.query.page) || pageConfig.page,
-        limit: Number(route.query.limit) || pageConfig.limit,
-        pageSizeOpts: pageConfig.pageSizeOpts
-    })
-
-    const updateTable = ()=>{
-        setTable&&setTable({
-            page:tableConfig.page,
-            limit:tableConfig.limit
+    const refreshPage = () => {
+        updateCallback && updateCallback({
+            page: pageConfig.page,
+            limit: pageConfig.limit
         })
     }
 
-    const toUpdateTable = ({ page, limit }:TableConfig) => {
-        if (page !== tableConfig.page || limit !== tableConfig.limit) {
+    const updatePage = ({ page, limit }: PageConfig) => {
+        // 对比参数，是否需要更新
+        const needUpdate = (Number(page) !== pageConfig.page || Number(limit) !== pageConfig.limit)
+        // 更新分页配置
+        Object.assign(pageConfig, {
+            page: Number(page || pageConfig.page),
+            limit: Number(limit || pageConfig.limit)
+        })
+        // 如果传入路由，则使用路由更新
+        if (route && router && needUpdate) {
             router.push({
                 path: route.path,
-                query: Object.assign({}, route.query, {
+                query: {
+                    ...route.query,
                     page,
                     limit
-                })
+                }
             })
-        }else{
-            updateTable()
+        } else {
+            
+            refreshPage()
         }
     }
 
-    const resetTable = ()=>{
-        toUpdateTable({
-            page: basePageConfig.page,
-            limit: tableConfig.limit
+    const resetPage = () => {
+        updatePage({
+            page: 1,
+            limit: pageConfig.limit
         })
     }
 
-    onBeforeRouteUpdate((to, from, next)=>{
-        const { page, limit } = to.query
-        Object.assign(tableConfig, {
-            page: Number(page) || pageConfig.page,
-            limit: Number(limit) || pageConfig.limit
+    // 传入route则使用路由上的参数
+    if (route && router) {
+        pageConfig.page = Number(route?.query.page || pageConfig.page)
+        pageConfig.limit = Number(route?.query.limit || pageConfig.limit)
+
+        onBeforeRouteUpdate((to, from, next) => {
+            next()
+            updatePage(to.query)
         })
-        next()
-        updateTable()
-    })
+    }
 
     return {
-        tableConfig,
-        updateTable,
-        toUpdateTable,
-        resetTable
+        pageConfig,
+        resetPage,
+        refreshPage,
+        updatePage
     }
 }
