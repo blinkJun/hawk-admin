@@ -29,7 +29,12 @@ interface ValidateCode {
     validateCodeHash:any
 }
 
-
+// 修改密码表单
+interface PasswordForm {
+    oldPassword:string
+    newPassword:string
+    newPasswordAgain:string
+}
 
 // 扩展axios返回的登录结果，可忽略不扩展
 interface LoginSuccessRes extends NomalizeRes {
@@ -76,6 +81,20 @@ export async function getAccountRoleDetail ():Promise<string[]> {
         return data.data
     } else {
         const errMsg = `获取权限失败：${decodeURIComponent(data.msg)}`
+        throw new Error(errMsg)
+    }
+}
+
+// 更新账户密码
+export async function updatePassword (passwordForm:PasswordForm):Promise<NomalizeRes> {
+    const {status,request,data} = await httpClient.post(`${modelPath}/password`,passwordForm)
+    if(status!==200){
+        throw new Error(request.statusText)
+    }
+    if (data.code===0) {
+        return data.data
+    } else {
+        const errMsg = `修改密码失败：${decodeURIComponent(data.msg)}`
         throw new Error(errMsg)
     }
 }
