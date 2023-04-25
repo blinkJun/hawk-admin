@@ -2,12 +2,13 @@
  * @Author liangjun
  * @LastEditors liangjun
  * @Date 2021-06-07 10:23:22
- * @LastEditTime 2023-04-25 11:45:10
+ * @LastEditTime 2023-04-25 13:58:48
  * @Description 验证权限方法和全局权限指令
  */
 import { VNode } from 'vue'
 import { useAccountStore } from '../store/account'
 import { ElMessage } from 'element-plus'
+import * as EventEmitter from 'events'
 
 const safeAuthCode = 'system'
 
@@ -30,7 +31,8 @@ export const validateAuthCodeAsync = async function (authCode: string, latest?: 
     return validateAuthCode(authCode)
 }
 
-const noAuthMessage = ()=>{
+const noAuthMessage = (event:MouseEvent)=>{
+    event.stopPropagation()
     ElMessage.error('您没有权限执行此操作！请联系管理员处理')
 }
 /**
@@ -50,12 +52,8 @@ export const handleAuthElement = function (el: HTMLElement, authCode: string, vn
         // 移除禁用样式
         el.removeAttribute('disabled')
         el.classList.remove('is-disabled')
-        // 恢复点击事件
-        const onClickHandle = vnode.el!._vei?.onClick
-        if(onClickHandle){
-            el.removeEventListener('click',noAuthMessage)
-            el.addEventListener('click',onClickHandle)
-        }
+        // 移除捕获阶段事件
+        el.removeEventListener('click',noAuthMessage)
     } else {
         // 使用样式隐藏元素
         if (del) {
@@ -64,12 +62,10 @@ export const handleAuthElement = function (el: HTMLElement, authCode: string, vn
         // 添加禁用样式
         el.setAttribute('disabled', 'true')
         el.classList.add('is-disabled')
-        // 覆盖点击事件
-        const onClickHandle = vnode.el!._vei?.onClick
-        if(onClickHandle){
-            el.removeEventListener('click',onClickHandle)
-            el.addEventListener('click',noAuthMessage)
-        }
+        // 增加捕获阶段事件
+        el.addEventListener('click',noAuthMessage,{
+            capture:true
+        })
     }
 }
 
